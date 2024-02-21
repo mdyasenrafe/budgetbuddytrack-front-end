@@ -2,6 +2,10 @@ import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View } from "react-native";
 import { useFonts } from "expo-font";
 import { Typography } from "./src/theme/typography";
+import MainNavigation from "./src/navigation/MainNavigation";
+import { Provider } from "react-redux";
+import { store } from "./src/store";
+import { NavigationContainer } from "@react-navigation/native";
 
 export default function App() {
   const [loaded] = useFonts({
@@ -15,16 +19,12 @@ export default function App() {
   }
 
   return (
-    <View style={styles.container}>
-      <Text
-        style={{
-          fontFamily: Typography.bold,
-        }}
-      >
-        Open up App.tsx to start working on your app!
-      </Text>
+    <Provider store={store}>
       <StatusBar style="auto" />
-    </View>
+      <NavigationContainer>
+        <MainNavigation />
+      </NavigationContainer>
+    </Provider>
   );
 }
 

@@ -1,7 +1,7 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import GetStarted from "../screens/onboarding/GetStarted";
 
-const Stack = createNativeStackNavigator();
+const Stack = createNativeStackNavigator<MainNavigationParamList>();
 
 export default function MainNavigation() {
   return (

@@ -11,7 +11,7 @@ interface ButtonProps {
   isDisabled?: boolean;
 }
 
-export function PrimaryButton({
+export function CustomButton({
   title,
   customStyle,
   onButtonPress,

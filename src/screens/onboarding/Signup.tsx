@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, TouchableOpacity, StyleSheet } from "react-native";
+import { View, TouchableOpacity, StyleSheet, Image } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { AntDesign, Feather } from "@expo/vector-icons";
 import CustomText from "../../components/common/Text/CustomText";
@@ -11,12 +11,9 @@ import { CustomInputProps } from "../../utils/types/textInputType";
 import { useDispatch } from "react-redux";
 import { setUser } from "../../features/auth/authSlice";
 import { isValidateEmail } from "../../utils/validEmail";
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import {
-  MainNavigationParamList,
-  MainStackScreenProps,
-} from "../../utils/types/navigationType";
-
+import { MainStackScreenProps } from "../../utils/types/navigationType";
+import * as ImagePicker from "expo-image-picker";
+import { ToastMessage } from "../../components/common/ToastMessage";
 // type Props = NativeStackScreenProps<MainNavigationParamList, "Signup">;
 
 type errorType = {
@@ -25,6 +22,7 @@ type errorType = {
   error: boolean;
 };
 
+let demoImage = "https://i.ibb.co/7VT9q3H/image.png";
 export default function Signup({ navigation }: MainStackScreenProps<"Signup">) {
   const [userData, setUserData] = useState<UserDataType>({
     name: "",
@@ -38,6 +36,7 @@ export default function Signup({ navigation }: MainStackScreenProps<"Signup">) {
     error: false,
   });
   const dispatch = useDispatch();
+  const [image, setImage] = useState<string>(demoImage);
 
   const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false);
   const [isRememberMeChecked, setIsRememberMeChecked] =
@@ -106,6 +105,32 @@ export default function Signup({ navigation }: MainStackScreenProps<"Signup">) {
       error: error,
     });
   };
+
+  const pickImage = async () => {
+    // No permissions request is necessary for launching the image library
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      const sizeInBytes: number = result?.assets[0]?.fileSize || 0;
+      const bytesInKB = 1024;
+      let sizeInKB = sizeInBytes / bytesInKB;
+      //  if image size up to 500 kb then need to show toast message
+      if (sizeInKB >= 500) {
+        ToastMessage({
+          type: "error",
+          message: "Pls upload less 500 kb",
+        });
+      } else {
+        setImage(result?.assets[0].uri as any);
+      }
+    }
+  };
+
   return (
     <SafeAreaView style={signupStyles.container}>
       <AntDesign
@@ -122,7 +147,36 @@ export default function Signup({ navigation }: MainStackScreenProps<"Signup">) {
           Welcome to BudgetBuddyTrack app. Let's get started.
         </CustomText>
       </View>
-
+      <View>
+        <Image
+          source={{ uri: image }}
+          style={{
+            width: 150,
+            height: 150,
+            alignSelf: "center",
+            position: "relative",
+            borderRadius: 150,
+            overflow: "hidden",
+          }}
+          resizeMode="cover"
+        />
+        <TouchableOpacity
+          style={{
+            position: "absolute",
+            bottom: 0,
+            left: "55%",
+            width: 35,
+            height: 35,
+            backgroundColor: color.secondary,
+            borderRadius: 20,
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+          onPress={pickImage}
+        >
+          <Feather name="edit" size={20} color={color.white} />
+        </TouchableOpacity>
+      </View>
       <View style={signupStyles.header}>
         {inputFields.map((field) => (
           <CustomInput

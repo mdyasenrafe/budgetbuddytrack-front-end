@@ -1,11 +1,11 @@
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, TextStyle } from "react-native";
 import React, { Children } from "react";
 import { TextPresets, presets } from "./Text.presets";
 
 interface TextPropsType {
   children: React.ReactNode;
   preset?: TextPresets;
-  style?: any;
+  style?: TextStyle;
 }
 
 export default function CustomText(props: TextPropsType) {

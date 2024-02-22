@@ -6,4 +6,6 @@ type TypographyType = {
 
 type MainNavigationParamList = {
   GetStarted: undefined;
+  Login: undefined;
+  Signup: undefined;
 };

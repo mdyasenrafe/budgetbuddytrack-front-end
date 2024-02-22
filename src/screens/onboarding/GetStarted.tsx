@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Image, StyleSheet } from "react-native";
+import { View, Image, StyleSheet, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { screenHeight, screenWidth } from "../../theme/theme";
 //@ts-ignore
@@ -7,8 +7,11 @@ import moneyGif from "../../../assets/image/auth/money_income.png";
 import CustomText from "../../components/common/Text/CustomText";
 import { CustomButton } from "../../components/common/Button";
 import { color } from "../../theme/color";
+import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 
-export default function GetStarted() {
+type Props = NativeStackScreenProps<MainNavigationParamList, "GetStarted">;
+
+export default function GetStarted({ navigation, route }: Props) {
   return (
     <SafeAreaView style={styles.container}>
       <Image source={moneyGif} style={styles.image} resizeMode="contain" />
@@ -19,11 +22,14 @@ export default function GetStarted() {
         <CustomButton
           title="Get Started"
           customStyle={styles.getStartedButton}
+          onButtonPress={() => navigation.navigate("Signup")}
         />
-        <CustomText style={styles.loginPrompt}>
-          Already Have an account?{" "}
-          <CustomText style={styles.loginText}>Login</CustomText>
-        </CustomText>
+        <TouchableOpacity onPress={() => navigation.navigate("Login")}>
+          <CustomText style={styles.loginPrompt}>
+            Already Have an account?{" "}
+            <CustomText style={styles.loginText}>Login</CustomText>
+          </CustomText>
+        </TouchableOpacity>
       </View>
     </SafeAreaView>
   );

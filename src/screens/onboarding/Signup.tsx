@@ -8,13 +8,16 @@ import { color } from "../../theme/color";
 import CustomInput from "../../components/common/CutomInput";
 import { AuthStyles } from "../../styles/AuthStyles";
 import { CustomInputProps } from "../../utils/types/textInputType";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../store";
+import { useDispatch } from "react-redux";
 import { setUser } from "../../features/auth/authSlice";
 import { isValidateEmail } from "../../utils/validEmail";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import {
+  MainNavigationParamList,
+  MainStackScreenProps,
+} from "../../utils/types/navigationType";
 
-type Props = NativeStackScreenProps<MainNavigationParamList, "Signup">;
+// type Props = NativeStackScreenProps<MainNavigationParamList, "Signup">;
 
 type errorType = {
   type: string;
@@ -22,8 +25,13 @@ type errorType = {
   error: boolean;
 };
 
-export default function Signup({ navigation }: Props) {
-  const userData = useSelector((state: RootState) => state.auth.user);
+export default function Signup({ navigation }: MainStackScreenProps<"Signup">) {
+  const [userData, setUserData] = useState<UserDataType>({
+    name: "",
+    email: "",
+    password: "",
+    photo: "",
+  });
   const [error, setError] = useState<errorType>({
     type: "",
     message: "",
@@ -36,7 +44,7 @@ export default function Signup({ navigation }: Props) {
     useState<boolean>(false);
 
   const handleInputChange = (field: keyof UserDataType, value: string) => {
-    dispatch(setUser({ ...userData, [field]: value }));
+    setUserData({ ...userData, [field]: value });
     updateError("", "", false);
   };
 
@@ -85,6 +93,9 @@ export default function Signup({ navigation }: Props) {
       updateError("password", "Password is required", true);
     } else {
       updateError("", "", false);
+      dispatch(setUser(userData));
+      navigation.navigate("BottomTab", { screen: "Home" });
+      // navigation.navigate("BottomTab", { screen: "Home" });
     }
   };
 

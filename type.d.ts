@@ -3,9 +3,3 @@ type TypographyType = {
   medium: string;
   bold: string;
 };
-
-type MainNavigationParamList = {
-  GetStarted: undefined;
-  Login: undefined;
-  Signup: undefined;
-};

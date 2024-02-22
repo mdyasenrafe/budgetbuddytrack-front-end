@@ -8,6 +8,7 @@ import CustomText from "../../components/common/Text/CustomText";
 import { CustomButton } from "../../components/common/Button";
 import { color } from "../../theme/color";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { MainNavigationParamList } from "../../utils/types/navigationType";
 
 type Props = NativeStackScreenProps<MainNavigationParamList, "GetStarted">;
 

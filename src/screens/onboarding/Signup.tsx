@@ -12,6 +12,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store";
 import { setUser } from "../../features/auth/authSlice";
 import { isValidateEmail } from "../../utils/validEmail";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+
+type Props = NativeStackScreenProps<MainNavigationParamList, "Signup">;
 
 type errorType = {
   type: string;
@@ -19,7 +22,7 @@ type errorType = {
   error: boolean;
 };
 
-export default function Signup() {
+export default function Signup({ navigation }: Props) {
   const userData = useSelector((state: RootState) => state.auth.user);
   const [error, setError] = useState<errorType>({
     type: "",
@@ -94,7 +97,12 @@ export default function Signup() {
   };
   return (
     <SafeAreaView style={signupStyles.container}>
-      <AntDesign name="arrowleft" size={24} color={color.primary} />
+      <AntDesign
+        onPress={() => navigation.goBack()}
+        name="arrowleft"
+        size={24}
+        color={color.primary}
+      />
       <View style={signupStyles.header}>
         <CustomText preset="h3" style={signupStyles.title}>
           Let's Create Your Account
@@ -120,7 +128,7 @@ export default function Signup() {
             containerStyle={StyleSheet.flatten([
               signupStyles.inputContainer,
               {
-                borderColor: field.key === error.type ? "red" : "lightgreyraf",
+                borderColor: field.key === error.type ? "red" : "lightgrey",
               },
             ])}
           />
@@ -155,10 +163,12 @@ export default function Signup() {
           onButtonPress={handleSubmit}
         />
 
-        <CustomText style={signupStyles.loginPrompt}>
-          Already Have an account?{" "}
-          <CustomText style={signupStyles.loginText}>Login</CustomText>
-        </CustomText>
+        <TouchableOpacity onPress={() => navigation.navigate("Login")}>
+          <CustomText style={signupStyles.loginPrompt}>
+            Already Have an account?{" "}
+            <CustomText style={signupStyles.loginText}>Login</CustomText>
+          </CustomText>
+        </TouchableOpacity>
       </View>
     </SafeAreaView>
   );

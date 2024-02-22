@@ -91,22 +91,22 @@ export default function Login({ navigation }: Props) {
   };
 
   return (
-    <SafeAreaView style={loginStyles.container}>
+    <SafeAreaView style={AuthStyles.container}>
       <AntDesign
         name="arrowleft"
         size={24}
         color={colors.primary}
         onPress={() => navigation.goBack()}
       />
-      <View style={loginStyles.header}>
-        <CustomText preset="h3" style={loginStyles.title}>
+      <View style={AuthStyles.header}>
+        <CustomText preset="h3" style={AuthStyles.title}>
           Welcome Back
         </CustomText>
         <CustomText preset="p3" style={loginStyles.welcomeText}>
           We are Happy to see you again. let's get started
         </CustomText>
       </View>
-      <View style={loginStyles.header}>
+      <View style={AuthStyles.header}>
         {inputFields.map((field) => (
           <CustomInput
             key={field.key}
@@ -120,7 +120,7 @@ export default function Login({ navigation }: Props) {
             showPasswordToggleComponent={field.showPasswordToggleComponent}
             hasShowPasswordOption={field.hasShowPasswordOption}
             containerStyle={StyleSheet.flatten([
-              loginStyles.inputContainer,
+              AuthStyles.inputContainer,
               {
                 borderColor: field.key === error.type ? "red" : "lightgrey",
               },
@@ -128,7 +128,7 @@ export default function Login({ navigation }: Props) {
           />
         ))}
         <View>
-          <CustomText preset="p3_bold" style={loginStyles.errorText}>
+          <CustomText preset="p3_bold" style={AuthStyles.errorText}>
             {error.error && error.message}
           </CustomText>
         </View>
@@ -141,9 +141,9 @@ export default function Login({ navigation }: Props) {
         />
 
         <TouchableOpacity onPress={() => navigation.navigate("Signup")}>
-          <CustomText style={loginStyles.loginPrompt}>
+          <CustomText style={AuthStyles.loginPrompt}>
             don't Have an account?{" "}
-            <CustomText style={loginStyles.loginText}>Signup</CustomText>
+            <CustomText style={AuthStyles.loginLink}>Signup</CustomText>
           </CustomText>
         </TouchableOpacity>
       </View>
@@ -152,35 +152,8 @@ export default function Login({ navigation }: Props) {
 }
 
 const loginStyles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "white",
-    paddingHorizontal: 8,
-  },
-  header: {
-    marginTop: 16,
-  },
-  title: {
-    marginTop: 6,
-    color: colors.black,
-  },
   welcomeText: {
     marginTop: 8,
     marginBottom: 24,
-  },
-  loginPrompt: {
-    textAlign: "center",
-    marginTop: 14,
-  },
-  loginText: {
-    color: colors.secondary,
-  },
-  inputContainer: {
-    marginBottom: 24,
-  },
-  errorText: {
-    color: "red",
-    marginBottom: 8,
-    textAlign: "center",
   },
 });

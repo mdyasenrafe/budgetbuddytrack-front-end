@@ -23,7 +23,7 @@ export default function SignupScreen({
     name: "",
     email: "",
     password: "",
-    profilePicture: "",
+    profilePicture: defaultProfileImage,
   });
 
   const [formError, setFormError] = useState({
@@ -31,9 +31,7 @@ export default function SignupScreen({
     message: "",
     hasError: false,
   });
-
   const dispatch = useDispatch();
-  const [profileImage, setProfileImage] = useState<string>(defaultProfileImage);
 
   const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false);
   const [rememberUser, setRememberUser] = useState(false);
@@ -119,21 +117,24 @@ export default function SignupScreen({
         //   message: "Image must be less than 500KB",
         // });
       } else {
-        setProfileImage(result.assets[0].uri);
+        setProfileData({
+          ...profileData,
+          profilePicture: result.assets[0].uri,
+        });
       }
     }
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={AuthStyles.container}>
       <AntDesign
         name="arrowleft"
         size={24}
         color={colors.primary}
         onPress={() => navigation.goBack()}
       />
-      <View style={styles.header}>
-        <Text preset="h3" style={styles.title}>
+      <View style={AuthStyles.header}>
+        <Text preset="h3" style={AuthStyles.title}>
           Create Your Account
         </Text>
         <Text preset="p3" style={styles.subtitle}>
@@ -144,7 +145,10 @@ export default function SignupScreen({
         onPress={chooseImage}
         style={styles.imagePickerContainer}
       >
-        <Image source={{ uri: profileImage }} style={styles.profileImage} />
+        <Image
+          source={{ uri: profileData.profilePicture }}
+          style={styles.profileImage}
+        />
         <View style={styles.imageEditIcon}>
           <Feather name="edit" size={20} color={colors.white} />
         </View>
@@ -163,7 +167,7 @@ export default function SignupScreen({
             showPasswordToggleComponent={field.showPasswordToggleComponent}
             hasShowPasswordOption={field.hasShowPasswordOption}
             containerStyle={StyleSheet.flatten([
-              styles.inputContainer,
+              AuthStyles.inputContainer,
               {
                 borderColor:
                   field.key === formError.field ? "red" : "lightgrey",
@@ -173,7 +177,7 @@ export default function SignupScreen({
         ))}
 
         {formError.hasError && (
-          <Text style={styles.errorText}>{formError.message}</Text>
+          <Text style={AuthStyles.errorText}>{formError.message}</Text>
         )}
         <TouchableOpacity
           style={styles.rememberMeContainer}
@@ -196,8 +200,9 @@ export default function SignupScreen({
         ])}
       />
       <TouchableOpacity onPress={() => navigation.navigate("Login")}>
-        <Text style={styles.loginPrompt}>
-          Already have an account? <Text style={styles.loginLink}>Login</Text>
+        <Text style={AuthStyles.loginPrompt}>
+          Already have an account?{" "}
+          <Text style={AuthStyles.loginLink}>Login</Text>
         </Text>
       </TouchableOpacity>
     </SafeAreaView>
@@ -205,17 +210,6 @@ export default function SignupScreen({
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.white,
-    paddingHorizontal: 20,
-  },
-  header: {
-    marginTop: 20,
-  },
-  title: {
-    color: colors.black,
-  },
   subtitle: {
     marginVertical: 10,
   },
@@ -244,11 +238,6 @@ const styles = StyleSheet.create({
   formContainer: {
     marginTop: 20,
   },
-  errorText: {
-    color: "red",
-    textAlign: "center",
-    marginBottom: 10,
-  },
   rememberMeContainer: {
     flexDirection: "row",
     alignItems: "center",
@@ -259,15 +248,5 @@ const styles = StyleSheet.create({
   },
   submitButton: {
     marginTop: 20,
-  },
-  loginPrompt: {
-    textAlign: "center",
-    marginTop: 20,
-  },
-  loginLink: {
-    color: colors.secondary,
-  },
-  inputContainer: {
-    marginBottom: 24,
   },
 });

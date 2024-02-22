@@ -6,7 +6,7 @@ import { screenHeight, screenWidth } from "../../theme/theme";
 import moneyGif from "../../../assets/image/auth/money_income.png";
 import CustomText from "../../components/common/Text/CustomText";
 import { CustomButton } from "../../components/common/Button";
-import { color } from "../../theme/color";
+import { colors } from "../../theme/colors";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { MainNavigationParamList } from "../../utils/types/navigationType";
 
@@ -61,6 +61,6 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   loginText: {
-    color: color.secondary,
+    color: colors.secondary,
   },
 });

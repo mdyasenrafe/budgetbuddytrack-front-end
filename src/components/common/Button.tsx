@@ -1,6 +1,6 @@
 import React from "react";
 import { StyleSheet, TextStyle, TouchableOpacity } from "react-native";
-import { color } from "../../theme/color";
+import { colors } from "../../theme/colors";
 import CustomText from "./Text/CustomText";
 
 interface ButtonProps {
@@ -24,7 +24,7 @@ export function CustomButton({
       onPress={onButtonPress}
       disabled={isDisabled}
     >
-      <CustomText preset="h6" style={{ color: buttonColor || color.white }}>
+      <CustomText preset="h6" style={{ color: buttonColor || colors.white }}>
         {title}
       </CustomText>
     </TouchableOpacity>
@@ -40,6 +40,6 @@ const styles = StyleSheet.create({
   },
   buttonBase: {
     borderRadius: 8,
-    backgroundColor: color.primary,
+    backgroundColor: colors.primary,
   },
 });

@@ -2,49 +2,45 @@ import React, { useEffect, useState } from "react";
 import { View, TouchableOpacity, StyleSheet, Image } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { AntDesign, Feather } from "@expo/vector-icons";
-import CustomText from "../../components/common/Text/CustomText";
-import { CustomButton } from "../../components/common/Button";
-import { color } from "../../theme/color";
-import CustomInput from "../../components/common/CutomInput";
-import { AuthStyles } from "../../styles/AuthStyles";
-import { CustomInputProps } from "../../utils/types/textInputType";
+import Text from "../../components/common/Text/CustomText";
 import { useDispatch } from "react-redux";
+import * as ImagePicker from "expo-image-picker";
+import { MainStackScreenProps } from "../../utils/types/navigationType";
 import { setUser } from "../../features/auth/authSlice";
 import { isValidateEmail } from "../../utils/validEmail";
-import { MainStackScreenProps } from "../../utils/types/navigationType";
-import * as ImagePicker from "expo-image-picker";
-import { ToastMessage } from "../../components/common/ToastMessage";
-// type Props = NativeStackScreenProps<MainNavigationParamList, "Signup">;
+import { colors } from "../../theme/colors";
+import { CustomInputProps } from "../../utils/types/textInputType";
+import CustomInput from "../../components/common/CutomInput";
+import { CustomButton } from "../../components/common/Button";
+import { AuthStyles } from "../../styles/AuthStyles";
 
-type errorType = {
-  type: string;
-  message: string;
-  error: boolean;
-};
+const defaultProfileImage = "https://i.ibb.co/7VT9q3H/image.png";
 
-let demoImage = "https://i.ibb.co/7VT9q3H/image.png";
-export default function Signup({ navigation }: MainStackScreenProps<"Signup">) {
-  const [userData, setUserData] = useState<UserDataType>({
+export default function SignupScreen({
+  navigation,
+}: MainStackScreenProps<"Signup">) {
+  const [profileData, setProfileData] = useState<UserDataType>({
     name: "",
     email: "",
     password: "",
-    photo: "",
+    profilePicture: "",
   });
-  const [error, setError] = useState<errorType>({
-    type: "",
+
+  const [formError, setFormError] = useState({
+    field: "",
     message: "",
-    error: false,
+    hasError: false,
   });
+
   const dispatch = useDispatch();
-  const [image, setImage] = useState<string>(demoImage);
+  const [profileImage, setProfileImage] = useState<string>(defaultProfileImage);
 
   const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false);
-  const [isRememberMeChecked, setIsRememberMeChecked] =
-    useState<boolean>(false);
+  const [rememberUser, setRememberUser] = useState(false);
 
-  const handleInputChange = (field: keyof UserDataType, value: string) => {
-    setUserData({ ...userData, [field]: value });
-    updateError("", "", false);
+  const handleInputChange = (name: keyof typeof profileData, value: string) => {
+    setProfileData({ ...profileData, [name]: value });
+    clearError();
   };
 
   const inputFields: CustomInputProps[] = [
@@ -81,103 +77,79 @@ export default function Signup({ navigation }: MainStackScreenProps<"Signup">) {
     },
   ];
 
-  const handleSubmit = () => {
-    if (!userData.name) {
-      updateError("name", "Name is required", true);
-    } else if (!userData.email) {
-      updateError("email", "Email is required", true);
-    } else if (!isValidateEmail(userData?.email)) {
-      updateError("email", "Please enter a valid email", true);
-    } else if (!userData.password) {
-      updateError("password", "Password is required", true);
-    } else {
-      updateError("", "", false);
-      dispatch(setUser(userData));
+  const submitProfileData = () => {
+    if (!validateFormFields()) {
+      dispatch(setUser(profileData));
       navigation.navigate("BottomTab", { screen: "Home" });
-      // navigation.navigate("BottomTab", { screen: "Home" });
     }
   };
 
-  const updateError = (type: string, message: string, error: boolean) => {
-    setError({
-      type: type,
-      message: message,
-      error: error,
-    });
+  const validateFormFields = () => {
+    if (!profileData.name) return showError("name", "Please enter your name.");
+    if (!profileData.email) return showError("email", "Email is required.");
+    if (!isValidateEmail(profileData.email))
+      return showError("email", "Enter a valid email.");
+    if (!profileData.password)
+      return showError("password", "Password cannot be empty.");
+    return false;
   };
 
-  const pickImage = async () => {
-    // No permissions request is necessary for launching the image library
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
+  const showError = (field: string, message: string) => {
+    setFormError({ field, message, hasError: true });
+    return true;
+  };
+
+  const clearError = () =>
+    setFormError({ field: "", message: "", hasError: false });
+
+  const chooseImage = async () => {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       aspect: [4, 3],
       quality: 1,
     });
 
     if (!result.canceled) {
-      const sizeInBytes: number = result?.assets[0]?.fileSize || 0;
-      const bytesInKB = 1024;
-      let sizeInKB = sizeInBytes / bytesInKB;
-      //  if image size up to 500 kb then need to show toast message
-      if (sizeInKB >= 500) {
-        ToastMessage({
-          type: "error",
-          message: "Pls upload less 500 kb",
-        });
+      const fileSizeInBytes: number = result?.assets[0]?.fileSize || 0;
+      const fileSizeInKB = fileSizeInBytes / 1024;
+      if (fileSizeInKB > 500) {
+        // showMessage({
+        //   type: "error",
+        //   message: "Image must be less than 500KB",
+        // });
       } else {
-        setImage(result?.assets[0].uri as any);
+        setProfileImage(result.assets[0].uri);
       }
     }
   };
 
   return (
-    <SafeAreaView style={signupStyles.container}>
+    <SafeAreaView style={styles.container}>
       <AntDesign
-        onPress={() => navigation.goBack()}
         name="arrowleft"
         size={24}
-        color={color.primary}
+        color={colors.primary}
+        onPress={() => navigation.goBack()}
       />
-      <View style={signupStyles.header}>
-        <CustomText preset="h3" style={signupStyles.title}>
-          Let's Create Your Account
-        </CustomText>
-        <CustomText preset="p3" style={signupStyles.welcomeText}>
-          Welcome to BudgetBuddyTrack app. Let's get started.
-        </CustomText>
+      <View style={styles.header}>
+        <Text preset="h3" style={styles.title}>
+          Create Your Account
+        </Text>
+        <Text preset="p3" style={styles.subtitle}>
+          Welcome! Let's get you set up.
+        </Text>
       </View>
-      <View>
-        <Image
-          source={{ uri: image }}
-          style={{
-            width: 150,
-            height: 150,
-            alignSelf: "center",
-            position: "relative",
-            borderRadius: 150,
-            overflow: "hidden",
-          }}
-          resizeMode="cover"
-        />
-        <TouchableOpacity
-          style={{
-            position: "absolute",
-            bottom: 0,
-            left: "55%",
-            width: 35,
-            height: 35,
-            backgroundColor: color.secondary,
-            borderRadius: 20,
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-          onPress={pickImage}
-        >
-          <Feather name="edit" size={20} color={color.white} />
-        </TouchableOpacity>
-      </View>
-      <View style={signupStyles.header}>
+      <TouchableOpacity
+        onPress={chooseImage}
+        style={styles.imagePickerContainer}
+      >
+        <Image source={{ uri: profileImage }} style={styles.profileImage} />
+        <View style={styles.imageEditIcon}>
+          <Feather name="edit" size={20} color={colors.white} />
+        </View>
+      </TouchableOpacity>
+      <View style={styles.formContainer}>
         {inputFields.map((field) => (
           <CustomInput
             key={field.key}
@@ -191,94 +163,111 @@ export default function Signup({ navigation }: MainStackScreenProps<"Signup">) {
             showPasswordToggleComponent={field.showPasswordToggleComponent}
             hasShowPasswordOption={field.hasShowPasswordOption}
             containerStyle={StyleSheet.flatten([
-              signupStyles.inputContainer,
+              styles.inputContainer,
               {
-                borderColor: field.key === error.type ? "red" : "lightgrey",
+                borderColor:
+                  field.key === formError.field ? "red" : "lightgrey",
               },
             ])}
           />
         ))}
-        <View>
-          <CustomText preset="p3_bold" style={signupStyles.errorText}>
-            {error.error && error.message}
-          </CustomText>
-        </View>
+
+        {formError.hasError && (
+          <Text style={styles.errorText}>{formError.message}</Text>
+        )}
         <TouchableOpacity
-          style={signupStyles.rememberMeContainer}
-          onPress={() => setIsRememberMeChecked(!isRememberMeChecked)}
+          style={styles.rememberMeContainer}
+          onPress={() => setRememberUser(!rememberUser)}
         >
           <Feather
-            name={isRememberMeChecked ? "check-square" : "square"}
+            name={rememberUser ? "check-square" : "square"}
             size={24}
-            color={color.primary}
+            color={colors.primary}
           />
-          <CustomText style={signupStyles.rememberMeText}>
-            Remember me
-          </CustomText>
+          <Text style={styles.rememberMeText}>Remember me</Text>
         </TouchableOpacity>
       </View>
-
-      <View>
-        <CustomButton
-          title="Submit"
-          customStyle={StyleSheet.flatten([
-            signupStyles.submitButton,
-            AuthStyles.getStartedButton,
-          ])}
-          onButtonPress={handleSubmit}
-        />
-
-        <TouchableOpacity onPress={() => navigation.navigate("Login")}>
-          <CustomText style={signupStyles.loginPrompt}>
-            Already Have an account?{" "}
-            <CustomText style={signupStyles.loginText}>Login</CustomText>
-          </CustomText>
-        </TouchableOpacity>
-      </View>
+      <CustomButton
+        title="Submit"
+        onButtonPress={submitProfileData}
+        customStyle={StyleSheet.flatten([
+          styles.submitButton,
+          AuthStyles.getStartedButton,
+        ])}
+      />
+      <TouchableOpacity onPress={() => navigation.navigate("Login")}>
+        <Text style={styles.loginPrompt}>
+          Already have an account? <Text style={styles.loginLink}>Login</Text>
+        </Text>
+      </TouchableOpacity>
     </SafeAreaView>
   );
 }
 
-const signupStyles = StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "white",
-    paddingHorizontal: 8,
+    backgroundColor: colors.white,
+    paddingHorizontal: 20,
   },
   header: {
-    marginTop: 16,
+    marginTop: 20,
   },
   title: {
-    marginTop: 6,
-    color: color.black,
+    color: colors.black,
   },
-  welcomeText: {
-    marginTop: 8,
-    marginBottom: 24,
+  subtitle: {
+    marginVertical: 10,
+  },
+  profileImage: {
+    width: 150,
+    height: 150,
+    borderRadius: 75,
+    alignSelf: "center",
+  },
+  imagePickerContainer: {
+    position: "relative",
+    alignSelf: "center",
+    marginTop: 20,
+  },
+  imageEditIcon: {
+    position: "absolute",
+    bottom: 0,
+    right: 0,
+    backgroundColor: colors.secondary,
+    borderRadius: 17.5,
+    width: 35,
+    height: 35,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  formContainer: {
+    marginTop: 20,
+  },
+  errorText: {
+    color: "red",
+    textAlign: "center",
+    marginBottom: 10,
   },
   rememberMeContainer: {
     flexDirection: "row",
     alignItems: "center",
+    marginTop: 10,
   },
   rememberMeText: {
-    marginLeft: 8,
+    marginLeft: 10,
   },
   submitButton: {
-    marginTop: 24,
+    marginTop: 20,
   },
   loginPrompt: {
     textAlign: "center",
-    marginTop: 14,
+    marginTop: 20,
   },
-  loginText: {
-    color: color.secondary,
+  loginLink: {
+    color: colors.secondary,
   },
   inputContainer: {
     marginBottom: 24,
-  },
-  errorText: {
-    color: "red",
-    marginBottom: 8,
-    textAlign: "center",
   },
 });

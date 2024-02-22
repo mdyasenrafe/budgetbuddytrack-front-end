@@ -4,7 +4,7 @@ import CustomText from "../../components/common/Text/CustomText";
 import { AntDesign, Feather } from "@expo/vector-icons";
 
 import { SafeAreaView } from "react-native-safe-area-context";
-import { color } from "../../theme/color";
+import { colors } from "../../theme/colors";
 // @ts-ignore
 import { CustomInputProps } from "../../utils/types/textInputType";
 import CustomInput from "../../components/common/CutomInput";
@@ -95,7 +95,7 @@ export default function Login({ navigation }: Props) {
       <AntDesign
         name="arrowleft"
         size={24}
-        color={color.primary}
+        color={colors.primary}
         onPress={() => navigation.goBack()}
       />
       <View style={loginStyles.header}>
@@ -162,28 +162,18 @@ const loginStyles = StyleSheet.create({
   },
   title: {
     marginTop: 6,
-    color: color.black,
+    color: colors.black,
   },
   welcomeText: {
     marginTop: 8,
     marginBottom: 24,
-  },
-  rememberMeContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  rememberMeText: {
-    marginLeft: 8,
-  },
-  submitButton: {
-    marginTop: 24,
   },
   loginPrompt: {
     textAlign: "center",
     marginTop: 14,
   },
   loginText: {
-    color: color.secondary,
+    color: colors.secondary,
   },
   inputContainer: {
     marginBottom: 24,

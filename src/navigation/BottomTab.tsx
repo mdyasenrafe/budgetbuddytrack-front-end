@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { StyleSheet } from "react-native";
-import { color } from "../theme/color";
 import Home from "../screens/tabs/home/Home";
 import { Feather } from "@expo/vector-icons";
 import Transaction from "../screens/tabs/transaction/Transaction";
 import Budget from "../screens/tabs/Budget/Budget";
 import Profile from "../screens/tabs/Profile/Profile";
 import { BottomTabParamList } from "../utils/types/navigationType";
+import { colors } from "../theme/colors";
 
 const Tab = createBottomTabNavigator<BottomTabParamList>();
 
@@ -20,7 +20,7 @@ export default function BottomTab() {
         screenOptions={{
           tabBarShowLabel: false,
           tabBarStyle: {
-            backgroundColor: color.tabsBackground,
+            backgroundColor: colors.tabsBackground,
             borderColor: "#000000",
             height: 80,
           },
@@ -37,7 +37,7 @@ export default function BottomTab() {
               <Feather
                 name="home"
                 size={35}
-                color={focused ? color.primary : color.grey}
+                color={focused ? colors.primary : colors.grey}
                 style={styles.tab_icon}
               />
             ),
@@ -53,7 +53,7 @@ export default function BottomTab() {
               <Feather
                 name="user"
                 size={35}
-                color={focused ? color.primary : color.grey}
+                color={focused ? colors.primary : colors.grey}
                 style={styles.tab_icon}
               />
             ),
@@ -78,7 +78,7 @@ export default function BottomTab() {
               <Feather
                 name="book"
                 size={35}
-                color={focused ? color.primary : color.grey}
+                color={focused ? colors.primary : colors.grey}
                 style={styles.tab_icon}
               />
             ),
@@ -94,7 +94,7 @@ export default function BottomTab() {
               <Feather
                 name="user"
                 size={35}
-                color={focused ? color.primary : color.grey}
+                color={focused ? colors.primary : colors.grey}
                 style={styles.tab_icon}
               />
             ),

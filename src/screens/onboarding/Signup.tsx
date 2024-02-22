@@ -1,66 +1,61 @@
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
-import CustomText from "../../components/common/Text/CustomText";
+import React, { useState } from "react";
+import { View, TouchableOpacity, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { AntDesign } from "@expo/vector-icons";
+import { AntDesign, Feather } from "@expo/vector-icons";
+import CustomText from "../../components/common/Text/CustomText";
+import { CustomButton } from "../../components/common/Button";
 import { color } from "../../theme/color";
 import CustomInput from "../../components/common/CutomInput";
-import { useState } from "react";
-import { Feather } from "@expo/vector-icons";
-import { CustomInputProps } from "../../utils/types/TextInputType";
-import { CustomButton } from "../../components/common/Button";
 import { AuthStyles } from "../../styles/AuthStyles";
+import { CustomInputProps } from "../../utils/types/TextInputType";
 
-type userDataType = {
+// Define the type for the user data state
+type UserDataType = {
   name: string;
   email: string;
   password: string;
-  confirmPassword: string;
 };
 
 export default function Signup() {
-  const [userData, setUserData] = useState({});
-  const [showPassword, setShowPassword] = useState<boolean>(false);
-  const [isRemember, setIsRemember] = useState<boolean>(false);
+  const [userData, setUserData] = useState<UserDataType>({
+    name: "",
+    email: "",
+    password: "",
+  });
+  const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false);
+  const [isRememberMeChecked, setIsRememberMeChecked] =
+    useState<boolean>(false);
 
-  const inputDatas: CustomInputProps[] = [
+  const handleInputChange = (field: keyof UserDataType, value: string) => {
+    setUserData({ ...userData, [field]: value });
+  };
+
+  const inputFields: CustomInputProps[] = [
     {
+      key: "name",
       placeholderText: "Name",
-      onTextChange: (value: string) => {
-        setUserData({ ...userData, name: value });
-      },
       capitalizationMode: "words",
-      containerStyle: {
-        marginBottom: 24,
-      },
+      inputType: "default",
     },
     {
+      key: "email",
       placeholderText: "Email",
-      onTextChange: (value: string) => {
-        setUserData({ ...userData, email: value });
-      },
+      capitalizationMode: "none",
       inputType: "email-address",
-      containerStyle: {
-        marginBottom: 24,
-      },
     },
     {
+      key: "password",
       placeholderText: "Password",
-      onTextChange: (value: string) => {
-        setUserData({ ...userData, password: value });
-      },
-      containerStyle: {
-        marginBottom: 24,
-      },
-      isSecureTextEntry: !showPassword,
+      capitalizationMode: "none",
+      inputType: "default",
+      isSecureTextEntry: !isPasswordVisible,
       hasShowPasswordOption: true,
       showPasswordToggleComponent: (
         <TouchableOpacity
-          onPress={() => {
-            setShowPassword(!showPassword);
-          }}
+          onPress={() => setIsPasswordVisible(!isPasswordVisible)}
         >
           <Feather
-            name={showPassword ? "eye" : "eye-off"}
+            name={isPasswordVisible ? "eye" : "eye-off"}
             size={20}
             color="black"
           />
@@ -68,91 +63,104 @@ export default function Signup() {
       ),
     },
   ];
+
   return (
-    <SafeAreaView
-      style={{
-        flex: 1,
-        backgroundColor: "white",
-        paddingHorizontal: 8,
-      }}
-    >
+    <SafeAreaView style={signupStyles.container}>
       <AntDesign name="arrowleft" size={24} color={color.primary} />
-      <View
-        style={{
-          marginTop: 16,
-        }}
-      >
-        <CustomText preset="h3">Let's Create Your Account</CustomText>
-        <CustomText
-          preset="p4"
-          style={{
-            marginTop: 6,
-            color: color.black,
-          }}
-        >
+      <View style={signupStyles.header}>
+        <CustomText preset="h3" style={signupStyles.title}>
+          Let's Create Your Account
+        </CustomText>
+        <CustomText preset="p3" style={signupStyles.welcomeText}>
           Welcome to BudgetBuddyTrack app. Let's get started.
         </CustomText>
-        <View
-          style={{
-            marginTop: 24,
-          }}
-        >
-          {inputDatas.map((input) => (
-            <CustomInput
-              placeholderText={input.placeholderText}
-              onTextChange={input.onTextChange}
-              capitalizationMode={input.capitalizationMode}
-              inputType={input.inputType}
-              showPasswordToggleComponent={input.showPasswordToggleComponent}
-              hasShowPasswordOption={input.hasShowPasswordOption}
-              isSecureTextEntry={input.isSecureTextEntry}
-              containerStyle={input.containerStyle}
-            />
-          ))}
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-            }}
-          >
-            <Feather
-              onPress={() => setIsRemember(!isRemember)}
-              name={isRemember ? "check-square" : "square"}
-              size={24}
-              color={color.primary}
-              style={{
-                marginRight: 8,
-              }}
-            />
-            <CustomText>Remember me</CustomText>
-          </View>
-        </View>
-        <View>
-          <CustomButton
-            title="Submit"
-            customStyle={[
-              AuthStyles.getStartedButton,
-              {
-                marginTop: 24,
-              },
-            ]}
+      </View>
+
+      <View style={signupStyles.header}>
+        {inputFields.map((field) => (
+          <CustomInput
+            key={field.key}
+            placeholderText={field.placeholderText}
+            onTextChange={(value) =>
+              handleInputChange(field.key as keyof UserDataType, value)
+            }
+            capitalizationMode={field.capitalizationMode}
+            inputType={field.inputType}
+            isSecureTextEntry={field.isSecureTextEntry}
+            showPasswordToggleComponent={field.showPasswordToggleComponent}
+            hasShowPasswordOption={field.hasShowPasswordOption}
+            containerStyle={signupStyles.inputContainer}
           />
-          <CustomText style={styles.loginPrompt}>
-            Already Have an account?{" "}
-            <CustomText style={styles.loginText}>Login</CustomText>
+        ))}
+        <TouchableOpacity
+          style={signupStyles.rememberMeContainer}
+          onPress={() => setIsRememberMeChecked(!isRememberMeChecked)}
+        >
+          <Feather
+            name={isRememberMeChecked ? "check-square" : "square"}
+            size={24}
+            color={color.primary}
+          />
+          <CustomText style={signupStyles.rememberMeText}>
+            Remember me
           </CustomText>
-        </View>
+        </TouchableOpacity>
+      </View>
+
+      <View>
+        <CustomButton
+          title="Submit"
+          customStyle={StyleSheet.flatten([
+            signupStyles.submitButton,
+            AuthStyles.getStartedButton,
+          ])}
+        />
+
+        <CustomText style={signupStyles.loginPrompt}>
+          Already Have an account?{" "}
+          <CustomText style={signupStyles.loginText}>Login</CustomText>
+        </CustomText>
       </View>
     </SafeAreaView>
   );
 }
 
-const styles = StyleSheet.create({
+const signupStyles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "white",
+    paddingHorizontal: 8,
+  },
+  header: {
+    marginTop: 16,
+  },
+  title: {
+    marginTop: 6,
+    color: color.black,
+  },
+  welcomeText: {
+    marginTop: 8,
+    marginBottom: 24,
+  },
+  rememberMeContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: 24,
+  },
+  rememberMeText: {
+    marginLeft: 8,
+  },
+  submitButton: {
+    marginTop: 24,
+  },
   loginPrompt: {
     textAlign: "center",
     marginTop: 14,
   },
   loginText: {
     color: color.secondary,
+  },
+  inputContainer: {
+    marginBottom: 24,
   },
 });

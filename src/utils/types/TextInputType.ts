@@ -2,8 +2,9 @@ import { TextInput, TextStyle } from "react-native";
 
 // Define a TypeScript interface for props
 export type CustomInputProps = {
+  key?: string;
   placeholderText: string;
-  onTextChange: (text: string) => void;
+  onTextChange?: (text: string) => void;
   capitalizationMode?: "none" | "sentences" | "words" | "characters";
   inputType?:
     | "default"

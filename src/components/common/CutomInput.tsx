@@ -2,7 +2,8 @@ import React from "react";
 import { View, StyleSheet, TextInput } from "react-native";
 import { Typography } from "../../theme/typography";
 import { Colors } from "react-native/Libraries/NewAppScreen";
-import { CustomInputProps } from "../../utils/types/TextInputType";
+// @ts-ignore
+import { CustomInputProps } from "../../utils/types/textInputType";
 
 export default function CustomInput({
   placeholderText,

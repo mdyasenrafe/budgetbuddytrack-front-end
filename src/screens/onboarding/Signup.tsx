@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, TouchableOpacity, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { AntDesign, Feather } from "@expo/vector-icons";
@@ -7,27 +7,34 @@ import { CustomButton } from "../../components/common/Button";
 import { color } from "../../theme/color";
 import CustomInput from "../../components/common/CutomInput";
 import { AuthStyles } from "../../styles/AuthStyles";
-import { CustomInputProps } from "../../utils/types/TextInputType";
+import { CustomInputProps } from "../../utils/types/textInputType";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../store";
+import { setUser } from "../../features/auth/authSlice";
+import { isValidateEmail } from "../../utils/validEmail";
 
-// Define the type for the user data state
-type UserDataType = {
-  name: string;
-  email: string;
-  password: string;
+type errorType = {
+  type: string;
+  message: string;
+  error: boolean;
 };
 
 export default function Signup() {
-  const [userData, setUserData] = useState<UserDataType>({
-    name: "",
-    email: "",
-    password: "",
+  const userData = useSelector((state: RootState) => state.auth.user);
+  const [error, setError] = useState<errorType>({
+    type: "",
+    message: "",
+    error: false,
   });
+  const dispatch = useDispatch();
+
   const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false);
   const [isRememberMeChecked, setIsRememberMeChecked] =
     useState<boolean>(false);
 
   const handleInputChange = (field: keyof UserDataType, value: string) => {
-    setUserData({ ...userData, [field]: value });
+    dispatch(setUser({ ...userData, [field]: value }));
+    updateError("", "", false);
   };
 
   const inputFields: CustomInputProps[] = [
@@ -64,6 +71,27 @@ export default function Signup() {
     },
   ];
 
+  const handleSubmit = () => {
+    if (!userData.name) {
+      updateError("name", "Name is required", true);
+    } else if (!userData.email) {
+      updateError("email", "Email is required", true);
+    } else if (!isValidateEmail(userData?.email)) {
+      updateError("email", "Please enter a valid email", true);
+    } else if (!userData.password) {
+      updateError("password", "Password is required", true);
+    } else {
+      updateError("", "", false);
+    }
+  };
+
+  const updateError = (type: string, message: string, error: boolean) => {
+    setError({
+      type: type,
+      message: message,
+      error: error,
+    });
+  };
   return (
     <SafeAreaView style={signupStyles.container}>
       <AntDesign name="arrowleft" size={24} color={color.primary} />
@@ -89,9 +117,19 @@ export default function Signup() {
             isSecureTextEntry={field.isSecureTextEntry}
             showPasswordToggleComponent={field.showPasswordToggleComponent}
             hasShowPasswordOption={field.hasShowPasswordOption}
-            containerStyle={signupStyles.inputContainer}
+            containerStyle={StyleSheet.flatten([
+              signupStyles.inputContainer,
+              {
+                borderColor: field.key === error.type ? "red" : "lightgreyraf",
+              },
+            ])}
           />
         ))}
+        <View>
+          <CustomText preset="p3_bold" style={signupStyles.errorText}>
+            {error.error && error.message}
+          </CustomText>
+        </View>
         <TouchableOpacity
           style={signupStyles.rememberMeContainer}
           onPress={() => setIsRememberMeChecked(!isRememberMeChecked)}
@@ -114,6 +152,7 @@ export default function Signup() {
             signupStyles.submitButton,
             AuthStyles.getStartedButton,
           ])}
+          onButtonPress={handleSubmit}
         />
 
         <CustomText style={signupStyles.loginPrompt}>
@@ -145,7 +184,6 @@ const signupStyles = StyleSheet.create({
   rememberMeContainer: {
     flexDirection: "row",
     alignItems: "center",
-    marginTop: 24,
   },
   rememberMeText: {
     marginLeft: 8,
@@ -162,5 +200,10 @@ const signupStyles = StyleSheet.create({
   },
   inputContainer: {
     marginBottom: 24,
+  },
+  errorText: {
+    color: "red",
+    marginBottom: 8,
+    textAlign: "center",
   },
 });

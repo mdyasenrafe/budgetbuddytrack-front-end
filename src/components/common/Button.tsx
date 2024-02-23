@@ -1,5 +1,10 @@
 import React from "react";
-import { StyleSheet, TextStyle, TouchableOpacity } from "react-native";
+import {
+  ActivityIndicator,
+  StyleSheet,
+  TextStyle,
+  TouchableOpacity,
+} from "react-native";
 import { colors } from "../../theme/colors";
 import CustomText from "./Text/CustomText";
 
@@ -9,6 +14,7 @@ interface ButtonProps {
   onButtonPress?: () => void;
   buttonColor?: string;
   isDisabled?: boolean;
+  isLoading?: boolean;
 }
 
 export function CustomButton({
@@ -17,16 +23,21 @@ export function CustomButton({
   onButtonPress,
   buttonColor,
   isDisabled,
+  isLoading,
 }: ButtonProps) {
   return (
     <TouchableOpacity
       style={[styles.buttonBase, styles.buttonSize, customStyle]}
       onPress={onButtonPress}
-      disabled={isDisabled}
+      disabled={isDisabled || isLoading}
     >
-      <CustomText preset="h6" style={{ color: buttonColor || colors.white }}>
-        {title}
-      </CustomText>
+      {isLoading ? (
+        <ActivityIndicator size="small" color="white" />
+      ) : (
+        <CustomText preset="h6" style={{ color: buttonColor || colors.white }}>
+          {title}
+        </CustomText>
+      )}
     </TouchableOpacity>
   );
 }

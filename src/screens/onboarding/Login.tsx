@@ -5,43 +5,51 @@ import { AntDesign, Feather } from "@expo/vector-icons";
 
 import { SafeAreaView } from "react-native-safe-area-context";
 import { colors } from "../../theme/colors";
-// @ts-ignore
 import { CustomInputProps } from "../../utils/types/textInputType";
-import CustomInput from "../../components/common/CutomInput";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { AuthStyles } from "../../styles/AuthStyles";
 import { CustomButton } from "../../components/common/Button";
 import { isValidateEmail } from "../../utils/validEmail";
+import { useLoginMutation } from "../../services/auth/auth";
+import CustomInput from "../../components/common/CutomInput";
 import { MainNavigationParamList } from "../../utils/types/navigationType";
 
-type userDataType = {
+type UserData = {
   email: string;
   password: string;
 };
-type errorType = {
+
+type ErrorInfo = {
   type: string;
   message: string;
   error: boolean;
 };
 
-type Props = NativeStackScreenProps<MainNavigationParamList, "Login">;
+interface ApiError {
+  data?: {
+    message?: string;
+  };
+}
 
-export default function Login({ navigation }: Props) {
-  const [user, setUser] = useState<userDataType>({
+type LoginProps = NativeStackScreenProps<MainNavigationParamList, "Login">;
+
+export default function Login({ navigation }: LoginProps) {
+  const [login, { isError, isLoading }] = useLoginMutation();
+  const [userData, setUserData] = useState<UserData>({
     email: "",
     password: "",
   });
-  const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false);
-
-  const handleInputChange = (field: keyof UserDataType, value: string) => {
-    setUser({ ...user, [field]: value });
-    updateError("", "", false);
-  };
-  const [error, setError] = useState<errorType>({
+  const [passwordVisible, setPasswordVisible] = useState(false);
+  const [error, setError] = useState<ErrorInfo>({
     type: "",
     message: "",
     error: false,
   });
+
+  const updateUserData = (field: keyof UserData, value: string) => {
+    setUserData({ ...userData, [field]: value });
+    clearError();
+  };
 
   const inputFields: CustomInputProps[] = [
     {
@@ -55,14 +63,12 @@ export default function Login({ navigation }: Props) {
       placeholderText: "Password",
       capitalizationMode: "none",
       inputType: "default",
-      isSecureTextEntry: !isPasswordVisible,
+      isSecureTextEntry: !passwordVisible,
       hasShowPasswordOption: true,
       showPasswordToggleComponent: (
-        <TouchableOpacity
-          onPress={() => setIsPasswordVisible(!isPasswordVisible)}
-        >
+        <TouchableOpacity onPress={() => setPasswordVisible(!passwordVisible)}>
           <Feather
-            name={isPasswordVisible ? "eye" : "eye-off"}
+            name={passwordVisible ? "eye" : "eye-off"}
             size={20}
             color="black"
           />
@@ -71,22 +77,32 @@ export default function Login({ navigation }: Props) {
     },
   ];
 
-  const updateError = (type: string, message: string, error: boolean) => {
-    setError({
-      type: type,
-      message: message,
-      error: error,
-    });
+  const clearError = () => setError({ type: "", message: "", error: false });
+  const showError = (type: string, message: string) => {
+    setError({ type, message, error: true });
+    return true;
   };
-  const handleSubmit = () => {
-    if (!user.email) {
-      updateError("email", "Email is required", true);
-    } else if (!isValidateEmail(user?.email)) {
-      updateError("email", "Please enter a valid email", true);
-    } else if (!user.password) {
-      updateError("password", "Password is required", true);
-    } else {
-      updateError("", "", false);
+
+  const handleLogin = async () => {
+    if (!userData.email) showError("email", "Email is required");
+    else if (!isValidateEmail(userData.email))
+      showError("email", "Please enter a valid email");
+    else if (!userData.password) showError("password", "Password is required");
+    else {
+      clearError();
+      try {
+        await login(userData).unwrap();
+      } catch (error: unknown) {
+        console.log(error);
+        let errorMessage = "An error occurred";
+        if (typeof error === "object" && error !== null) {
+          const apiError = error as ApiError;
+          if (apiError.data?.message) {
+            errorMessage = apiError.data.message;
+          }
+        }
+        showError("", errorMessage);
+      }
     }
   };
 
@@ -103,46 +119,40 @@ export default function Login({ navigation }: Props) {
           Welcome Back
         </CustomText>
         <CustomText preset="p3" style={loginStyles.welcomeText}>
-          We are Happy to see you again. let's get started
+          We are happy to see you again. Let's get started.
         </CustomText>
       </View>
-      <View style={AuthStyles.header}>
+      <View>
         {inputFields.map((field) => (
           <CustomInput
             key={field.key}
-            placeholderText={field.placeholderText}
+            {...field}
             onTextChange={(value) =>
-              handleInputChange(field.key as keyof UserDataType, value)
+              updateUserData(field.key as keyof UserData, value)
             }
-            capitalizationMode={field.capitalizationMode}
-            inputType={field.inputType}
-            isSecureTextEntry={field.isSecureTextEntry}
-            showPasswordToggleComponent={field.showPasswordToggleComponent}
-            hasShowPasswordOption={field.hasShowPasswordOption}
             containerStyle={StyleSheet.flatten([
               AuthStyles.inputContainer,
-              {
-                borderColor: field.key === error.type ? "red" : "lightgrey",
-              },
+              { borderColor: field.key === error.type ? "red" : "lightgrey" },
             ])}
           />
         ))}
-        <View>
+        {error.error && (
           <CustomText preset="p3_bold" style={AuthStyles.errorText}>
-            {error.error && error.message}
+            {error.message}
           </CustomText>
-        </View>
+        )}
       </View>
       <View>
         <CustomButton
           title="Submit"
-          customStyle={StyleSheet.flatten([AuthStyles.getStartedButton])}
-          onButtonPress={handleSubmit}
+          customStyle={AuthStyles.getStartedButton}
+          onButtonPress={handleLogin}
+          isDisabled={isLoading}
+          isLoading={isLoading}
         />
-
         <TouchableOpacity onPress={() => navigation.navigate("Signup")}>
           <CustomText style={AuthStyles.loginPrompt}>
-            don't Have an account?{" "}
+            Don't have an account?{" "}
             <CustomText style={AuthStyles.loginLink}>Signup</CustomText>
           </CustomText>
         </TouchableOpacity>

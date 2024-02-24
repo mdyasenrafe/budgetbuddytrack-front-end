@@ -13,12 +13,18 @@ import { CustomInputProps } from "../../utils/types/textInputType";
 import CustomInput from "../../components/common/CutomInput";
 import { CustomButton } from "../../components/common/Button";
 import { AuthStyles } from "../../styles/AuthStyles";
+import { showMessage } from "../../components/common/ToastMessage";
+import { useRegisterMutation } from "../../services/auth/authApi";
+import { useImageUploadMutation } from "../../services/imageUpload";
 
 const defaultProfileImage = "https://i.ibb.co/7VT9q3H/image.png";
 
 export default function SignupScreen({
   navigation,
 }: MainStackScreenProps<"Signup">) {
+  const [registerUser, { isLoading, isError, isSuccess }] =
+    useRegisterMutation();
+  const [imageUpload, { isLoading: imageLoading }] = useImageUploadMutation();
   const [profileData, setProfileData] = useState<UserDataType>({
     name: "",
     email: "",
@@ -31,7 +37,6 @@ export default function SignupScreen({
     message: "",
     hasError: false,
   });
-  const dispatch = useDispatch();
 
   const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false);
   const [rememberUser, setRememberUser] = useState(false);
@@ -75,10 +80,29 @@ export default function SignupScreen({
     },
   ];
 
-  const submitProfileData = () => {
+  const submitProfileData = async () => {
     if (!validateFormFields()) {
-      dispatch(setUser(profileData));
-      navigation.navigate("BottomTab", { screen: "Home" });
+      try {
+        const res = await imageUpload({
+          url: profileData.profilePicBase64,
+        }).unwrap();
+        setProfileData({
+          ...profileData,
+          profilePicture: res?.link,
+        });
+
+        await registerUser(profileData).unwrap();
+        navigation.navigate("BottomTab", { screen: "Home" });
+      } catch (error: unknown) {
+        let errorMessage = "An error occurred";
+        if (typeof error === "object" && error !== null) {
+          const apiError = error as ApiError;
+          if (apiError.data?.message) {
+            errorMessage = apiError.data.message;
+          }
+        }
+        showError("", errorMessage);
+      }
     }
   };
 
@@ -106,20 +130,22 @@ export default function SignupScreen({
       allowsEditing: true,
       aspect: [4, 3],
       quality: 1,
+      base64: true,
     });
 
     if (!result.canceled) {
       const fileSizeInBytes: number = result?.assets[0]?.fileSize || 0;
       const fileSizeInKB = fileSizeInBytes / 1024;
       if (fileSizeInKB > 500) {
-        // showMessage({
-        //   type: "error",
-        //   message: "Image must be less than 500KB",
-        // });
+        showMessage({
+          type: "error",
+          message: "Image must be less than 500KB",
+        });
       } else {
         setProfileData({
           ...profileData,
-          profilePicture: result.assets[0].uri,
+          profilePicture: result.assets[0].uri || "",
+          profilePicBase64: result.assets[0].base64,
         });
       }
     }
@@ -198,6 +224,8 @@ export default function SignupScreen({
           styles.submitButton,
           AuthStyles.getStartedButton,
         ])}
+        isLoading={isLoading || imageLoading}
+        isDisabled={isLoading || imageLoading}
       />
       <TouchableOpacity onPress={() => navigation.navigate("Login")}>
         <Text style={AuthStyles.loginPrompt}>

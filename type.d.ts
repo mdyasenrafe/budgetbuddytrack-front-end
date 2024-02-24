@@ -3,3 +3,9 @@ type TypographyType = {
   medium: string;
   bold: string;
 };
+
+interface ApiError {
+  data?: {
+    message?: string;
+  };
+}

@@ -4,4 +4,5 @@ type UserDataType = {
   email: string;
   password: string;
   profilePicture: string;
+  profilePicBase64?: string | null;
 };

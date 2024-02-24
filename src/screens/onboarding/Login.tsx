@@ -1,5 +1,5 @@
 import { StyleSheet, TouchableOpacity, View } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import CustomText from "../../components/common/Text/CustomText";
 import { AntDesign, Feather } from "@expo/vector-icons";
 
@@ -10,7 +10,7 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { AuthStyles } from "../../styles/AuthStyles";
 import { CustomButton } from "../../components/common/Button";
 import { isValidateEmail } from "../../utils/validEmail";
-import { useLoginMutation } from "../../services/auth/auth";
+import { useLoginMutation } from "../../services/auth/authApi";
 import CustomInput from "../../components/common/CutomInput";
 import { MainNavigationParamList } from "../../utils/types/navigationType";
 
@@ -25,16 +25,10 @@ type ErrorInfo = {
   error: boolean;
 };
 
-interface ApiError {
-  data?: {
-    message?: string;
-  };
-}
-
 type LoginProps = NativeStackScreenProps<MainNavigationParamList, "Login">;
 
 export default function Login({ navigation }: LoginProps) {
-  const [login, { isError, isLoading }] = useLoginMutation();
+  const [login, { isError, isLoading, error: apiError }] = useLoginMutation();
   const [userData, setUserData] = useState<UserData>({
     email: "",
     password: "",
@@ -92,8 +86,8 @@ export default function Login({ navigation }: LoginProps) {
       clearError();
       try {
         await login(userData).unwrap();
+        navigation.navigate("BottomTab", { screen: "Home" });
       } catch (error: unknown) {
-        console.log(error);
         let errorMessage = "An error occurred";
         if (typeof error === "object" && error !== null) {
           const apiError = error as ApiError;

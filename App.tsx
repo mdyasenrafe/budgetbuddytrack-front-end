@@ -1,7 +1,6 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet } from "react-native";
 import { useFonts } from "expo-font";
-import { Typography } from "./src/theme/typography";
 import MainNavigation from "./src/navigation/MainNavigation";
 import { Provider } from "react-redux";
 import { store } from "./src/store";

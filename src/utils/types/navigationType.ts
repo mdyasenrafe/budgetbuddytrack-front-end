@@ -18,7 +18,7 @@ export type MainNavigationParamList = {
   Login: undefined;
   Signup: undefined;
   BottomTab: NavigatorScreenParams<BottomTabParamList>;
-  EditPassword: undefined;
+  ChangePassword: undefined;
   EditProfile: undefined;
 };
 

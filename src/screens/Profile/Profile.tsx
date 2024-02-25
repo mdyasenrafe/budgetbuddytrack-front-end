@@ -24,13 +24,17 @@ export default function UserProfileScreen({
       id: 1,
       title: "Edit Profile",
       icon: <Feather name="user" size={24} color="black" />,
-      onPress: () => {},
+      onPress: () => {
+        navigation.navigate("EditProfile");
+      },
     },
     {
       id: 2,
       title: "Change Password",
       icon: <AntDesign name="lock" size={24} color="black" />,
-      onPress: () => {},
+      onPress: () => {
+        navigation.navigate("ChangePassword");
+      },
     },
     {
       id: 3,

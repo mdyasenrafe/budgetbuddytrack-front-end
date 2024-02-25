@@ -14,6 +14,8 @@ export const authApi = api.injectEndpoints({
         try {
           const { data } = await queryFulfilled;
           dispatch(setUser(data?.data));
+          dispatch(setToken(data.token));
+          await saveToken(data?.token);
         } catch {}
       },
     }),
@@ -34,7 +36,16 @@ export const authApi = api.injectEndpoints({
         }
       },
     }),
+    getInfoFromToken: builder.query({
+      query: () => {
+        return "auth/user-info";
+      },
+    }),
   }),
 });
 
-export const { useRegisterMutation, useLoginMutation } = authApi;
+export const {
+  useRegisterMutation,
+  useLoginMutation,
+  useGetInfoFromTokenQuery,
+} = authApi;

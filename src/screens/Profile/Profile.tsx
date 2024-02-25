@@ -1,22 +1,16 @@
 import React from "react";
-import {
-  View,
-  ScrollView,
-  Image,
-  TouchableOpacity,
-  StyleSheet,
-} from "react-native";
+import { View, ScrollView, Image, StyleSheet } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import CustomText from "../../../components/common/Text/CustomText";
-import { BottomTabScreenTypeProps } from "../../../utils/types/navigationType";
-import { colors } from "../../../theme/colors";
+import CustomText from "../../components/common/Text/CustomText";
+import { BottomTabScreenTypeProps } from "../../utils/types/navigationType";
+import { colors } from "../../theme/colors";
 import { AntDesign, Feather, MaterialIcons } from "@expo/vector-icons";
 import { useDispatch, useSelector } from "react-redux";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { setToken, setUser } from "../../../features/auth/authSlice";
-import ProfileOptionItem from "../../../components/profile/ProfileOptionItem";
-import { ProfileOption } from "../../../utils/types/ProfileType";
-import { GlobalStyles } from "../../../styles/GlobalStyles";
+import { setToken, setUser } from "../../features/auth/authSlice";
+import ProfileOptionItem from "../../components/profile/ProfileOptionItem";
+import { ProfileOption } from "../../utils/types/ProfileType";
+import { GlobalStyles } from "../../styles/GlobalStyles";
 
 export default function UserProfileScreen({
   navigation,

@@ -4,12 +4,6 @@ import { StyleSheet, TouchableOpacity, View } from "react-native";
 import CustomText from "../common/Text/CustomText";
 import { GlobalStyles } from "../../styles/GlobalStyles";
 
-const IconComponents = {
-  user: Feather,
-  lock: AntDesign,
-  logout: MaterialIcons,
-};
-
 export default function ProfileOptionItem({
   option,
   isLastItem,

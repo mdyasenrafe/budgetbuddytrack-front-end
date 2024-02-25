@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { StyleSheet } from "react-native";
-import Home from "../screens/tabs/home/Home";
+import Home from "../screens/home/Home";
 import { Feather } from "@expo/vector-icons";
-import Transaction from "../screens/tabs/transaction/Transaction";
-import Budget from "../screens/tabs/Budget/Budget";
-import Profile from "../screens/tabs/Profile/Profile";
+import Transaction from "../screens/transaction/Transaction";
+import Budget from "../screens/Budget/Budget";
+import Profile from "../screens/Profile/Profile";
 import { BottomTabParamList } from "../utils/types/navigationType";
 import { colors } from "../theme/colors";
 

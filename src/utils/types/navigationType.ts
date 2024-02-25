@@ -18,6 +18,8 @@ export type MainNavigationParamList = {
   Login: undefined;
   Signup: undefined;
   BottomTab: NavigatorScreenParams<BottomTabParamList>;
+  EditPassword: undefined;
+  EditProfile: undefined;
 };
 
 export type MainStackScreenProps<T extends keyof MainNavigationParamList> =

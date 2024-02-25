@@ -23,7 +23,7 @@ export type MainNavigationParamList = {
 export type MainStackScreenProps<T extends keyof MainNavigationParamList> =
   NativeStackScreenProps<MainNavigationParamList, T>;
 
-export type HomeTabScreenProps<T extends keyof BottomTabParamList> =
+export type BottomTabScreenTypeProps<T extends keyof BottomTabParamList> =
   CompositeScreenProps<
     BottomTabScreenProps<BottomTabParamList, T>,
     MainStackScreenProps<keyof MainNavigationParamList>

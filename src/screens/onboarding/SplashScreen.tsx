@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { View, Image, StyleSheet } from "react-native";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useGetInfoFromTokenQuery } from "../../services/auth/authApi";
 import { setToken, setUser } from "../../features/auth/authSlice";
 import { getToken } from "../../utils/storage";
@@ -9,10 +9,12 @@ import LoadingSpinner from "../../components/common/LoadingSpinner";
 import { screenHeight, screenWidth } from "../../theme/theme";
 // @ts-ignore
 import splashImage from "../../../assets/splash.png";
+import { RootState, store } from "../../store";
 
 export default function SplashScreen({
   navigation,
 }: MainStackScreenProps<"SplashScreen">) {
+  const { token } = useSelector((state: RootState) => state.auth);
   const dispatch = useDispatch();
   const [isTokenLoaded, setIsTokenLoaded] = useState(false);
 
@@ -24,6 +26,8 @@ export default function SplashScreen({
     const storedToken = await getToken();
     if (storedToken) {
       dispatch(setToken(storedToken));
+    } else if (storedToken == null) {
+      navigation.navigate("GetStarted");
     }
     setIsTokenLoaded(true);
   };
@@ -33,16 +37,16 @@ export default function SplashScreen({
   });
 
   useEffect(() => {
-    if (!isLoading && isTokenLoaded) {
+    if (!isLoading && isTokenLoaded && token) {
       if (data) {
-        dispatch(setUser(data));
+        dispatch(setUser(data?.data));
         navigation.navigate("BottomTab", { screen: "Home" });
       } else if (error) {
         console.log("Failed to fetch user info:", error);
         navigation.navigate("GetStarted");
       }
     }
-  }, [data, error, isLoading, isTokenLoaded, navigation, dispatch]);
+  }, [data, error, isLoading, isTokenLoaded, dispatch, token]);
 
   return (
     <View style={styles.container}>

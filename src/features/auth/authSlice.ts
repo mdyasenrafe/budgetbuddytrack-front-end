@@ -3,13 +3,11 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 interface AuthState {
   user: UserDataType | null;
   token: string | null;
-  isLoading: boolean;
 }
 
 const initialState: AuthState = {
   user: null,
   token: null,
-  isLoading: false,
 };
 
 const authSlice = createSlice({
@@ -17,10 +15,10 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     // Action to set the user upon login
-    setUser: (state, action: PayloadAction<UserDataType>) => {
+    setUser: (state, action: PayloadAction<UserDataType | null>) => {
       state.user = action.payload;
     },
-    setToken: (state, action: PayloadAction<string>) => {
+    setToken: (state, action: PayloadAction<string | null>) => {
       state.token = action.payload;
     },
   },

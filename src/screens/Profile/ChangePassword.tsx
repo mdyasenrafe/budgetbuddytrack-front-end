@@ -7,55 +7,55 @@ import { CustomInputProps } from "../../utils/types/textInputType";
 import { SafeAreaView } from "react-native-safe-area-context";
 import CustomText from "../../components/common/Text/CustomText";
 import { colors } from "../../theme/colors";
-import { CustomButton } from "../../components/common/Button";
 import CustomInput from "../../components/common/CutomInput";
+import { CustomButton } from "../../components/common/Button";
 
-type FormDataType = {
-  oldPassword: string;
+type PasswordFormData = {
+  currentPassword: string;
   newPassword: string;
   confirmNewPassword: string;
 };
 
-export default function ChangePassword({
+export default function PasswordChangeScreen({
   navigation,
 }: MainStackScreenProps<"ChangePassword">) {
-  const [formData, setFormData] = useState<FormDataType>({
-    oldPassword: "",
+  const [passwordData, setPasswordData] = useState<PasswordFormData>({
+    currentPassword: "",
     newPassword: "",
     confirmNewPassword: "",
   });
-  const [isPasswordVisible, setIsPasswordVisible] = useState({
-    oldPassword: false,
+  const [passwordVisibility, setPasswordVisibility] = useState({
+    currentPassword: false,
     newPassword: false,
     confirmNewPassword: false,
   });
-  const [formError, setFormError] = useState({
-    field: "",
-    message: "",
+  const [errorState, setErrorState] = useState({
+    errorField: "",
+    errorMessage: "",
     hasError: false,
   });
 
-  const createPasswordField = (
-    key: keyof FormDataType,
-    placeholderText: string
+  const generatePasswordField = (
+    fieldName: keyof PasswordFormData,
+    placeholder: string
   ): CustomInputProps => ({
-    key,
-    placeholderText,
+    key: fieldName,
+    placeholderText: placeholder,
     capitalizationMode: "none",
     inputType: "default",
-    isSecureTextEntry: !isPasswordVisible[key],
+    isSecureTextEntry: !passwordVisibility[fieldName],
     hasShowPasswordOption: true,
     showPasswordToggleComponent: (
       <TouchableOpacity
         onPress={() =>
-          setIsPasswordVisible((prevState) => ({
+          setPasswordVisibility((prevState) => ({
             ...prevState,
-            [key]: !prevState[key],
+            [fieldName]: !prevState[fieldName],
           }))
         }
       >
         <Feather
-          name={isPasswordVisible[key] ? "eye" : "eye-off"}
+          name={passwordVisibility[fieldName] ? "eye" : "eye-off"}
           size={20}
           color="black"
         />
@@ -64,50 +64,49 @@ export default function ChangePassword({
   });
 
   const inputFields: CustomInputProps[] = [
-    createPasswordField("oldPassword", "Old Password"),
-    createPasswordField("newPassword", "New Password"),
-    createPasswordField("confirmNewPassword", "Confirm New Password"),
+    generatePasswordField("currentPassword", "Current Password"),
+    generatePasswordField("newPassword", "New Password"),
+    generatePasswordField("confirmNewPassword", "Confirm New Password"),
   ];
 
-  const handleInputChange = (name: keyof typeof formData, value: string) => {
-    setFormData({ ...formData, [name]: value });
+  const handleInputChange = (
+    fieldName: keyof typeof passwordData,
+    value: string
+  ) => {
+    setPasswordData({ ...passwordData, [fieldName]: value });
     clearError();
   };
 
   const clearError = () =>
-    setFormError({ field: "", message: "", hasError: false });
+    setErrorState({ errorField: "", errorMessage: "", hasError: false });
 
-  const showError = (field: string, message: string) => {
-    setFormError({ field, message, hasError: true });
+  const displayError = (field: string, message: string) => {
+    setErrorState({ errorField: field, errorMessage: message, hasError: true });
     return true;
   };
 
   const handleSubmit = () => {
-    if (!formData.oldPassword)
-      return showError("oldPassword", "Old password is required.");
-    else if (!formData.newPassword)
-      return showError("newPassword", "New password is required.");
-    else if (!formData.confirmNewPassword)
-      return showError(
+    if (!passwordData.currentPassword)
+      return displayError("currentPassword", "Current password is required.");
+    else if (!passwordData.newPassword)
+      return displayError("newPassword", "New password is required.");
+    else if (!passwordData.confirmNewPassword)
+      return displayError(
         "confirmNewPassword",
-        "Confirm new password is required."
+        "Confirming new password is required."
       );
     else {
-      console.log(formData);
+      console.log(passwordData);
     }
   };
 
   useEffect(() => {
-    console.log(formError);
-  }, []);
+    console.log(errorState);
+  }, [errorState]);
 
   return (
-    <SafeAreaView
-      style={{
-        paddingHorizontal: 16,
-      }}
-    >
-      <View style={styles.header}>
+    <SafeAreaView style={styles.safeArea}>
+      <View style={styles.headerContainer}>
         <AntDesign
           name="arrowleft"
           size={24}
@@ -122,7 +121,7 @@ export default function ChangePassword({
           key={field.key}
           placeholderText={field.placeholderText}
           onTextChange={(value) =>
-            handleInputChange(field.key as keyof FormDataType, value)
+            handleInputChange(field.key as keyof PasswordFormData, value)
           }
           capitalizationMode={field.capitalizationMode}
           inputType={field.inputType}
@@ -132,13 +131,14 @@ export default function ChangePassword({
           containerStyle={StyleSheet.flatten([
             AuthStyles.inputContainer,
             {
-              borderColor: field.key === formError.field ? "red" : "lightgrey",
+              borderColor:
+                field.key === errorState.errorField ? "red" : "lightgrey",
             },
           ])}
         />
       ))}
-      {formError.hasError && (
-        <Text style={AuthStyles.errorText}>{formError.message}</Text>
+      {errorState.hasError && (
+        <Text style={AuthStyles.errorText}>{errorState.errorMessage}</Text>
       )}
       <View>
         <CustomButton
@@ -155,7 +155,10 @@ export default function ChangePassword({
 }
 
 const styles = StyleSheet.create({
-  header: {
+  safeArea: {
+    paddingHorizontal: 16,
+  },
+  headerContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",

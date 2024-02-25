@@ -9,25 +9,28 @@ import CustomText from "../../components/common/Text/CustomText";
 import { colors } from "../../theme/colors";
 import CustomInput from "../../components/common/CutomInput";
 import { CustomButton } from "../../components/common/Button";
+import { useChangePasswordMutation } from "../../services/auth/authApi";
+import { showMessage } from "../../components/common/ToastMessage";
 
 type PasswordFormData = {
   currentPassword: string;
   newPassword: string;
-  confirmNewPassword: string;
+  confirmPassword: string;
 };
 
 export default function PasswordChangeScreen({
   navigation,
 }: MainStackScreenProps<"ChangePassword">) {
+  const [changePassword, { isLoading, isError }] = useChangePasswordMutation();
   const [passwordData, setPasswordData] = useState<PasswordFormData>({
     currentPassword: "",
     newPassword: "",
-    confirmNewPassword: "",
+    confirmPassword: "",
   });
   const [passwordVisibility, setPasswordVisibility] = useState({
     currentPassword: false,
     newPassword: false,
-    confirmNewPassword: false,
+    confirmPassword: false,
   });
   const [errorState, setErrorState] = useState({
     errorField: "",
@@ -66,7 +69,7 @@ export default function PasswordChangeScreen({
   const inputFields: CustomInputProps[] = [
     generatePasswordField("currentPassword", "Current Password"),
     generatePasswordField("newPassword", "New Password"),
-    generatePasswordField("confirmNewPassword", "Confirm New Password"),
+    generatePasswordField("confirmPassword", "Confirm New Password"),
   ];
 
   const handleInputChange = (
@@ -85,24 +88,41 @@ export default function PasswordChangeScreen({
     return true;
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!passwordData.currentPassword)
       return showError("currentPassword", "Current password is required.");
     else if (!passwordData.newPassword)
       return showError("newPassword", "New password is required.");
-    else if (!passwordData.confirmNewPassword)
+    else if (!passwordData.confirmPassword)
       return showError(
-        "confirmNewPassword",
+        "confirmPassword",
         "Confirming new password is required."
       );
-    else {
-      console.log(passwordData);
+    else if (passwordData.newPassword !== passwordData.confirmPassword) {
+      return showError(
+        "",
+        "New password and password confirmation do not match."
+      );
+    } else {
+      try {
+        await changePassword(passwordData).unwrap();
+        showMessage({
+          type: "success",
+          message: "password has been changed successfully.",
+        });
+        navigation.goBack();
+      } catch (error: unknown) {
+        let errorMessage = "An error occurred";
+        if (typeof error === "object" && error !== null) {
+          const apiError = error as ApiError;
+          if (apiError.data?.message) {
+            errorMessage = apiError.data.message;
+          }
+        }
+        showError("", errorMessage);
+      }
     }
   };
-
-  useEffect(() => {
-    console.log(errorState);
-  }, [errorState]);
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -148,6 +168,8 @@ export default function PasswordChangeScreen({
             AuthStyles.getStartedButton,
           ])}
           onButtonPress={handleSubmit}
+          isDisabled={isLoading}
+          isLoading={isLoading}
         />
       </View>
     </SafeAreaView>

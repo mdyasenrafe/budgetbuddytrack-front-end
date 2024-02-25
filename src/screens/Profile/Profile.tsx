@@ -60,7 +60,7 @@ export default function UserProfileScreen({
           color={colors.white}
           onPress={() => navigation.goBack()}
         />
-        <CustomText preset="p1_medium" style={styles.headerTitle}>
+        <CustomText preset="h4" style={styles.headerTitle}>
           Profile
         </CustomText>
         <View />

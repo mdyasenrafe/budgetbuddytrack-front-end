@@ -83,14 +83,12 @@ export default function SignupScreen({
   const submitProfileData = async () => {
     if (!validateFormFields()) {
       try {
-        const res = await imageUpload({
-          url: profileData.profilePicBase64,
-        }).unwrap();
-        setProfileData({
-          ...profileData,
-          profilePicture: res?.link,
-        });
-
+        if (profileData?.profilePicBase64) {
+          const res = await imageUpload({
+            url: profileData.profilePicBase64,
+          }).unwrap();
+          profileData["profilePicture"] = res?.link;
+        }
         await registerUser(profileData).unwrap();
         navigation.navigate("BottomTab", { screen: "Home" });
       } catch (error: unknown) {

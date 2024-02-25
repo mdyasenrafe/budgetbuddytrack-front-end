@@ -80,18 +80,18 @@ export default function PasswordChangeScreen({
   const clearError = () =>
     setErrorState({ errorField: "", errorMessage: "", hasError: false });
 
-  const displayError = (field: string, message: string) => {
+  const showError = (field: string, message: string) => {
     setErrorState({ errorField: field, errorMessage: message, hasError: true });
     return true;
   };
 
   const handleSubmit = () => {
     if (!passwordData.currentPassword)
-      return displayError("currentPassword", "Current password is required.");
+      return showError("currentPassword", "Current password is required.");
     else if (!passwordData.newPassword)
-      return displayError("newPassword", "New password is required.");
+      return showError("newPassword", "New password is required.");
     else if (!passwordData.confirmNewPassword)
-      return displayError(
+      return showError(
         "confirmNewPassword",
         "Confirming new password is required."
       );

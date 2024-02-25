@@ -1,5 +1,5 @@
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { MainStackScreenProps } from "../../utils/types/navigationType";
 import { AntDesign, Feather } from "@expo/vector-icons";
 import { AuthStyles } from "../../styles/AuthStyles";
@@ -29,7 +29,11 @@ export default function ChangePassword({
     newPassword: false,
     confirmNewPassword: false,
   });
-  const [formError, setFormError] = useState({});
+  const [formError, setFormError] = useState({
+    field: "",
+    message: "",
+    hasError: false,
+  });
 
   const createPasswordField = (
     key: keyof FormDataType,
@@ -65,14 +69,37 @@ export default function ChangePassword({
     createPasswordField("confirmNewPassword", "Confirm New Password"),
   ];
 
-  // Rest of your component...
-
   const handleInputChange = (name: keyof typeof formData, value: string) => {
     setFormData({ ...formData, [name]: value });
     clearError();
   };
 
-  const clearError = () => setFormError({});
+  const clearError = () =>
+    setFormError({ field: "", message: "", hasError: false });
+
+  const showError = (field: string, message: string) => {
+    setFormError({ field, message, hasError: true });
+    return true;
+  };
+
+  const handleSubmit = () => {
+    if (!formData.oldPassword)
+      return showError("oldPassword", "Old password is required.");
+    else if (!formData.newPassword)
+      return showError("newPassword", "New password is required.");
+    else if (!formData.confirmNewPassword)
+      return showError(
+        "confirmNewPassword",
+        "Confirm new password is required."
+      );
+    else {
+      console.log(formData);
+    }
+  };
+
+  useEffect(() => {
+    console.log(formError);
+  }, []);
 
   return (
     <SafeAreaView
@@ -102,9 +129,17 @@ export default function ChangePassword({
           isSecureTextEntry={field.isSecureTextEntry}
           showPasswordToggleComponent={field.showPasswordToggleComponent}
           hasShowPasswordOption={field.hasShowPasswordOption}
-          containerStyle={AuthStyles.inputContainer}
+          containerStyle={StyleSheet.flatten([
+            AuthStyles.inputContainer,
+            {
+              borderColor: field.key === formError.field ? "red" : "lightgrey",
+            },
+          ])}
         />
       ))}
+      {formError.hasError && (
+        <Text style={AuthStyles.errorText}>{formError.message}</Text>
+      )}
       <View>
         <CustomButton
           title="Submit"
@@ -112,6 +147,7 @@ export default function ChangePassword({
             styles.submitButton,
             AuthStyles.getStartedButton,
           ])}
+          onButtonPress={handleSubmit}
         />
       </View>
     </SafeAreaView>

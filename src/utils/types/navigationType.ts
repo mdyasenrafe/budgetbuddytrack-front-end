@@ -13,6 +13,7 @@ export type BottomTabParamList = {
 };
 
 export type MainNavigationParamList = {
+  SplashScreen: undefined;
   GetStarted: undefined;
   Login: undefined;
   Signup: undefined;

@@ -2,17 +2,16 @@ import React from "react";
 import { View, Image, StyleSheet, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { screenHeight, screenWidth } from "../../theme/theme";
-//@ts-ignore
-import moneyGif from "../../../assets/image/auth/money_income.png";
 import CustomText from "../../components/common/Text/CustomText";
 import { CustomButton } from "../../components/common/Button";
 import { colors } from "../../theme/colors";
-import type { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { MainNavigationParamList } from "../../utils/types/navigationType";
+import { MainStackScreenProps } from "../../utils/types/navigationType";
+//@ts-ignore
+import moneyGif from "../../../assets/image/auth/money_income.png";
 
-type Props = NativeStackScreenProps<MainNavigationParamList, "GetStarted">;
-
-export default function GetStarted({ navigation, route }: Props) {
+export default function GetStarted({
+  navigation,
+}: MainStackScreenProps<"GetStarted">) {
   return (
     <SafeAreaView style={styles.container}>
       <Image source={moneyGif} style={styles.image} resizeMode="contain" />

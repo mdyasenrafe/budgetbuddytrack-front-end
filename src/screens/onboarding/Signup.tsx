@@ -1,12 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { View, TouchableOpacity, StyleSheet, Image } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { AntDesign, Feather } from "@expo/vector-icons";
 import Text from "../../components/common/Text/CustomText";
-import { useDispatch } from "react-redux";
 import * as ImagePicker from "expo-image-picker";
 import { MainStackScreenProps } from "../../utils/types/navigationType";
-import { setUser } from "../../features/auth/authSlice";
 import { isValidateEmail } from "../../utils/validEmail";
 import { colors } from "../../theme/colors";
 import { CustomInputProps } from "../../utils/types/textInputType";

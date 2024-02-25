@@ -5,8 +5,8 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../../store";
 
 export default function Home() {
-  const user = useSelector((state: RootState) => state.auth.user);
-  console.log("user", user);
+  const { user, token } = useSelector((state: RootState) => state.auth);
+  console.log("user =>", user, "token =>N", token);
   return (
     <SafeAreaView
       style={{

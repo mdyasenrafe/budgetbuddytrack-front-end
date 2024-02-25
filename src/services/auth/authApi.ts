@@ -1,4 +1,5 @@
-import { setUser } from "../../features/auth/authSlice";
+import { setToken, setUser } from "../../features/auth/authSlice";
+import { saveToken } from "../../utils/storage";
 import { api } from "../api";
 
 export const authApi = api.injectEndpoints({
@@ -26,7 +27,11 @@ export const authApi = api.injectEndpoints({
         try {
           const { data } = await queryFulfilled;
           dispatch(setUser(data.data));
-        } catch {}
+          dispatch(setToken(data.token));
+          await saveToken(data?.token);
+        } catch (error) {
+          console.error("Login failed:", error);
+        }
       },
     }),
   }),

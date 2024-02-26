@@ -8,6 +8,7 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 export type BottomTabParamList = {
   Home: undefined;
   Transaction: undefined;
+  Add: undefined;
   Budget: undefined;
   Profile: undefined;
 };

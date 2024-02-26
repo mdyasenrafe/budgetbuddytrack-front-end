@@ -1,113 +1,79 @@
-import React, { useState } from "react";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import React from "react";
+import {
+  createBottomTabNavigator,
+  BottomTabScreenProps,
+} from "@react-navigation/bottom-tabs";
 import { StyleSheet } from "react-native";
-import Home from "../screens/home/Home";
-import { Feather } from "@expo/vector-icons";
-import Transaction from "../screens/transaction/Transaction";
-import Budget from "../screens/Budget/Budget";
-import Profile from "../screens/Profile/Profile";
+import HomeScreen from "../screens/home/Home";
+import TransactionScreen from "../screens/transaction/Transaction";
+import BudgetScreen from "../screens/Budget/Budget";
+import ProfileScreen from "../screens/Profile/Profile";
 import { BottomTabParamList } from "../utils/types/navigationType";
 import { colors } from "../theme/colors";
+import { Feather } from "@expo/vector-icons";
+
+type RouteName = keyof BottomTabParamList;
 
 const Tab = createBottomTabNavigator<BottomTabParamList>();
 
-// const Stack = createNativeStackNavigator<MainNavigationParamList>();
-
-export default function BottomTab() {
-  return (
-    <>
-      <Tab.Navigator
-        screenOptions={{
-          tabBarShowLabel: false,
-          tabBarStyle: {
-            backgroundColor: colors.tabsBackground,
-            borderColor: "#000000",
-            height: 80,
-          },
-        }}
-        initialRouteName="Home"
-      >
-        <Tab.Screen
-          name="Home"
-          component={Home}
-          options={{
-            unmountOnBlur: true,
-            headerShown: false,
-            tabBarIcon: ({ focused }) => (
-              <Feather
-                name="home"
-                size={35}
-                color={focused ? colors.primary : colors.grey}
-                style={styles.tab_icon}
-              />
-            ),
-          }}
-        />
-        <Tab.Screen
-          name="Transaction"
-          component={Transaction}
-          options={{
-            unmountOnBlur: true,
-            headerShown: false,
-            tabBarIcon: ({ focused }) => (
-              <Feather
-                name="user"
-                size={35}
-                color={focused ? colors.primary : colors.grey}
-                style={styles.tab_icon}
-              />
-            ),
-          }}
-        />
-        {/* <Tab.Screen
-          name="Plus"
-          component={PlusScreen}
-          options={{
-            tabBarButton: () => (
-             
-            ),
-          }}
-        /> */}
-        <Tab.Screen
-          name="Budget"
-          component={Budget}
-          options={{
-            unmountOnBlur: true,
-            headerShown: false,
-            tabBarIcon: ({ focused }) => (
-              <Feather
-                name="book"
-                size={35}
-                color={focused ? colors.primary : colors.grey}
-                style={styles.tab_icon}
-              />
-            ),
-          }}
-        />
-        <Tab.Screen
-          name="Profile"
-          component={Profile}
-          options={{
-            unmountOnBlur: true,
-            headerShown: false,
-            tabBarIcon: ({ focused }) => (
-              <Feather
-                name="user"
-                size={35}
-                color={focused ? colors.primary : colors.grey}
-                style={styles.tab_icon}
-              />
-            ),
-          }}
-        />
-      </Tab.Navigator>
-    </>
+const BottomTabNavigator: React.FC = () => {
+  const renderTabBarIcon = (name: string, focused: boolean) => (
+    <Feather
+      name={name as any}
+      size={35}
+      color={focused ? colors.primary : colors.grey}
+    />
   );
-}
+
+  const screenOptions = ({
+    route,
+  }: BottomTabScreenProps<BottomTabParamList, RouteName>) => ({
+    tabBarShowLabel: false,
+    tabBarStyle: styles.tabBar,
+    unmountOnBlur: true,
+    headerShown: false,
+    tabBarIcon: ({ focused }: any) => {
+      const iconName = getIconName(route.name, focused);
+      return renderTabBarIcon(iconName, focused);
+    },
+  });
+
+  const getIconName = (routeName: RouteName, focused: boolean): string => {
+    switch (routeName) {
+      case "Home":
+        return "home";
+      case "Transaction":
+        return "bar-chart";
+      case "Budget":
+        return "book";
+      case "Profile":
+        return "user";
+      default:
+        return "circle"; // Default icon
+    }
+  };
+
+  return (
+    <Tab.Navigator screenOptions={screenOptions} initialRouteName="Home">
+      <Tab.Screen name="Home" component={HomeScreen} />
+      <Tab.Screen name="Transaction" component={TransactionScreen} />
+      <Tab.Screen name="Budget" component={BudgetScreen} />
+      <Tab.Screen name="Profile" component={ProfileScreen} />
+    </Tab.Navigator>
+  );
+};
+
 const styles = StyleSheet.create({
-  tab_icon: {
+  tabBar: {
+    backgroundColor: colors.tabsBackground,
+    borderColor: "#000000",
+    height: 80,
+  },
+  tabIcon: {
     alignItems: "center",
     justifyContent: "center",
     top: 5,
   },
 });
+
+export default BottomTabNavigator;

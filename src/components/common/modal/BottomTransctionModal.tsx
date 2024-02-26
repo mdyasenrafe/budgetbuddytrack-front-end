@@ -1,9 +1,13 @@
-import { View, Text, Modal, TouchableOpacity } from "react-native";
+import { View, Text, Modal, TouchableOpacity, Image } from "react-native";
 import React from "react";
 import CustomText from "../Text/CustomText";
 import { colors } from "../../../theme/colors";
 import { screenWidth } from "../../../theme/theme";
 import { Feather, Entypo } from "@expo/vector-icons";
+// @ts-ignore
+import addExpense from "../../../../assets/image/icons/expense.png";
+// @ts-ignore
+import addIncome from "../../../../assets/image/icons/income.png";
 
 export default function BottomTransctionModal({
   modalVisible,
@@ -12,10 +16,21 @@ export default function BottomTransctionModal({
   modalVisible: boolean;
   setModalVisible: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
-  let expense =
-    "Use this to note down what you spend, from snacks to bills. It shows you where your money goes and helps you spend wisely. Start now!";
-  let income =
-    "Add all the money you earn, like your salary or gifts, here. It helps you see how much you make and where it comes from. Easy and quick!";
+  const data = [
+    {
+      title: "Add Income",
+      image: addIncome,
+      description:
+        "Track your earnings, including salary and gifts, for a clear view of your income sources. Simple and fast!",
+    },
+    {
+      title: "Add Expense",
+      image: addExpense,
+      description:
+        "Log your spending on everything from snacks to bills to manage your finances better. Begin today!",
+    },
+  ];
+
   return (
     <Modal
       animationType="slide"
@@ -28,68 +43,59 @@ export default function BottomTransctionModal({
           flex: 1,
           justifyContent: "center",
           alignItems: "center",
-          width: screenWidth,
         }}
       >
         <View
           style={{
-            margin: 20,
-            backgroundColor: "white",
-            width: screenWidth,
-            padding: 35,
-            alignItems: "center",
-            shadowColor: "#000",
-            shadowOffset: { width: 0, height: 2 },
-            shadowOpacity: 0.25,
-            shadowRadius: 4,
-            elevation: 5,
+            width: screenWidth - 32,
           }}
         >
-          <CustomText style={{ marginBottom: 15, textAlign: "center" }}>
-            Your Modal Content Here
-          </CustomText>
-          {/* Close Button */}
-          <TouchableOpacity
-            style={{
-              backgroundColor: colors.primary,
-              padding: 10,
-              elevation: 2,
-            }}
-            onPress={() => setModalVisible(!modalVisible)}
-          >
-            <CustomText style={{ color: "white" }}>Hide Modal</CustomText>
-          </TouchableOpacity>
+          {data.map((item) => (
+            <TouchableOpacity
+              style={{
+                flexDirection: "row",
+                backgroundColor: "white",
+                alignItems: "center",
+                marginBottom: 16,
+                borderRadius: 16,
+                padding: 14,
+                shadowColor: "#000",
+                shadowOffset: { width: 0, height: 2 },
+                shadowOpacity: 0.25,
+                shadowRadius: 4,
+                elevation: 5,
+              }}
+            >
+              <View>
+                <Image
+                  source={item.image}
+                  style={{
+                    width: 60,
+                    height: 60,
+                  }}
+                />
+              </View>
+              <View
+                style={{
+                  width: "80%",
+                  marginLeft: 8,
+                }}
+              >
+                <CustomText preset="h4">{item.title}</CustomText>
+                <CustomText
+                  preset="p4"
+                  style={{
+                    color: "grey",
+                    marginTop: 8,
+                  }}
+                >
+                  {item.description}
+                </CustomText>
+              </View>
+            </TouchableOpacity>
+          ))}
         </View>
 
-        <View
-          style={{
-            margin: 20,
-            backgroundColor: "white",
-            width: screenWidth,
-            padding: 35,
-            alignItems: "center",
-            shadowColor: "#000",
-            shadowOffset: { width: 0, height: 2 },
-            shadowOpacity: 0.25,
-            shadowRadius: 4,
-            elevation: 5,
-          }}
-        >
-          <CustomText style={{ marginBottom: 15, textAlign: "center" }}>
-            Your Modal Content Here
-          </CustomText>
-          {/* Close Button */}
-          <TouchableOpacity
-            style={{
-              backgroundColor: colors.primary,
-              padding: 10,
-              elevation: 2,
-            }}
-            onPress={() => setModalVisible(!modalVisible)}
-          >
-            <CustomText style={{ color: "white" }}>Hide Modal</CustomText>
-          </TouchableOpacity>
-        </View>
         <TouchableOpacity
           style={{
             position: "absolute",

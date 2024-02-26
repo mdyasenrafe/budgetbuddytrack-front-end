@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import {
-  createBottomTabNavigator,
   BottomTabScreenProps,
+  createBottomTabNavigator,
 } from "@react-navigation/bottom-tabs";
-import { Modal, StyleSheet, TouchableOpacity, View } from "react-native";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
 import HomeScreen from "../screens/home/Home";
 import TransactionScreen from "../screens/transaction/Transaction";
 import BudgetScreen from "../screens/Budget/Budget";
@@ -11,24 +11,23 @@ import ProfileScreen from "../screens/Profile/Profile";
 import { BottomTabParamList } from "../utils/types/navigationType";
 import { colors } from "../theme/colors";
 import { Feather, Entypo } from "@expo/vector-icons";
-import CustomText from "../components/common/Text/CustomText";
-import BottomTransctionModal from "../components/common/modal/BottomTransctionModal";
+import TransactionModal from "../components/common/modal/TransactionModal";
 
 type RouteName = keyof BottomTabParamList;
-
 const Tab = createBottomTabNavigator<BottomTabParamList>();
 
-const BottomTabNavigator = () => {
-  const [modalVisible, setModalVisible] = useState<boolean>(false);
-  const renderTabBarIcon = (name: string, focused: boolean) => (
+const BottomTab = () => {
+  const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
+
+  const renderIcon = (iconName: string, isFocused: boolean) => (
     <Feather
-      name={name as any}
+      name={iconName as any}
       size={35}
-      color={focused ? colors.primary : colors.grey}
+      color={isFocused ? colors.primary : colors.grey}
     />
   );
 
-  const screenOptions = ({
+  const tabScreenOptions = ({
     route,
   }: BottomTabScreenProps<BottomTabParamList, RouteName>) => ({
     tabBarShowLabel: false,
@@ -36,12 +35,15 @@ const BottomTabNavigator = () => {
     unmountOnBlur: true,
     headerShown: false,
     tabBarIcon: ({ focused }: any) => {
-      const iconName = getIconName(route.name, focused);
-      return renderTabBarIcon(iconName, focused);
+      const iconName = iconNameForRoute(route.name, focused);
+      return renderIcon(iconName, focused);
     },
   });
 
-  const getIconName = (routeName: RouteName, focused: boolean): string => {
+  const iconNameForRoute = (
+    routeName: RouteName,
+    isFocused: boolean
+  ): string => {
     switch (routeName) {
       case "Home":
         return "home";
@@ -52,12 +54,12 @@ const BottomTabNavigator = () => {
       case "Profile":
         return "user";
       default:
-        return "circle"; // Default icon
+        return "circle";
     }
   };
 
-  const PlusButton = ({ onPress }: any) => {
-    return modalVisible ? (
+  const AddButton = ({ onPress }: any) => {
+    return isModalVisible ? (
       <View
         style={{
           width: 70,
@@ -65,35 +67,19 @@ const BottomTabNavigator = () => {
         }}
       ></View>
     ) : (
-      <TouchableOpacity
-        onPress={onPress}
-        style={{
-          top: -30,
-        }}
-      >
-        <View
-          style={{
-            width: 70,
-            height: 70,
-            borderRadius: 35,
-            backgroundColor: colors.primary,
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
+      <TouchableOpacity onPress={onPress} style={styles.addButton}>
+        <View style={styles.addButtonInner}>
           <Entypo name="plus" size={35} color={colors.white} />
         </View>
       </TouchableOpacity>
     );
   };
 
-  const NullComponent = () => {
-    return null;
-  };
+  const NullComponent = () => null;
 
   return (
     <>
-      <Tab.Navigator screenOptions={screenOptions} initialRouteName="Home">
+      <Tab.Navigator screenOptions={tabScreenOptions} initialRouteName="Home">
         <Tab.Screen name="Home" component={HomeScreen} />
         <Tab.Screen name="Transaction" component={TransactionScreen} />
         <Tab.Screen
@@ -101,17 +87,17 @@ const BottomTabNavigator = () => {
           component={NullComponent}
           options={{
             tabBarButton: () => (
-              <PlusButton onPress={() => setModalVisible(true)} />
+              <AddButton onPress={() => setIsModalVisible(true)} />
             ),
           }}
         />
         <Tab.Screen name="Budget" component={BudgetScreen} />
         <Tab.Screen name="Profile" component={ProfileScreen} />
       </Tab.Navigator>
-      {modalVisible && (
-        <BottomTransctionModal
-          modalVisible={modalVisible}
-          setModalVisible={setModalVisible}
+      {isModalVisible && (
+        <TransactionModal
+          modalVisible={isModalVisible}
+          setModalVisible={setIsModalVisible}
         />
       )}
     </>
@@ -124,6 +110,22 @@ const styles = StyleSheet.create({
     borderColor: "#000000",
     height: 90,
   },
+  addButton: {
+    top: -30,
+  },
+  hiddenAddButton: {
+    width: 0,
+    height: 0,
+  },
+  addButtonInner: {
+    width: 70,
+    height: 70,
+    borderRadius: 35,
+    backgroundColor: colors.primary,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+
   tabIcon: {
     alignItems: "center",
     justifyContent: "center",
@@ -141,4 +143,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default BottomTabNavigator;
+export default BottomTab;

@@ -40,4 +40,5 @@ export type CustomInputProps = {
   leadingIconComponent?: React.ReactNode;
   textInputRef?: React.RefObject<TextInput>;
   shouldAutoFocus?: boolean;
+  placeholderTextColor?: string;
 };

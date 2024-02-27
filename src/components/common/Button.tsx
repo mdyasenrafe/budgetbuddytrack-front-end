@@ -34,9 +34,14 @@ export function CustomButton({
       {isLoading ? (
         <ActivityIndicator size="small" color="white" />
       ) : (
-        <CustomText preset="h6" style={{ color: buttonColor || colors.white }}>
-          {title}
-        </CustomText>
+        <>
+          <CustomText
+            preset="h6"
+            style={{ color: buttonColor || colors.white }}
+          >
+            {title}
+          </CustomText>
+        </>
       )}
     </TouchableOpacity>
   );

@@ -21,6 +21,8 @@ export type MainNavigationParamList = {
   BottomTab: NavigatorScreenParams<BottomTabParamList>;
   ChangePassword: undefined;
   EditProfile: undefined;
+  AddIncome: undefined;
+  AddExpense: undefined;
 };
 
 export type MainStackScreenProps<T extends keyof MainNavigationParamList> =
@@ -31,3 +33,9 @@ export type BottomTabScreenTypeProps<T extends keyof BottomTabParamList> =
     BottomTabScreenProps<BottomTabParamList, T>,
     MainStackScreenProps<keyof MainNavigationParamList>
   >;
+
+declare global {
+  namespace ReactNavigation {
+    interface MainParamList extends MainNavigationParamList {}
+  }
+}

@@ -30,6 +30,7 @@ export default function CustomInput({
   leadingIconComponent,
   textInputRef,
   shouldAutoFocus = false,
+  placeholderTextColor,
 }: CustomInputProps) {
   return (
     <View>
@@ -54,6 +55,7 @@ export default function CustomInput({
           onFocus={onFocusAction}
           ref={textInputRef || null}
           autoFocus={shouldAutoFocus}
+          placeholderTextColor={placeholderTextColor}
         />
         {hasShowPasswordOption && showPasswordToggleComponent}
       </View>

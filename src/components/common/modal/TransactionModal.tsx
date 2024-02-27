@@ -16,6 +16,8 @@ import { Feather, Entypo } from "@expo/vector-icons";
 import addExpense from "../../../../assets/image/icons/expense.png";
 // @ts-ignore
 import addIncome from "../../../../assets/image/icons/income.png";
+import { useNavigation } from "@react-navigation/native";
+import { BottomTabScreenTypeProps } from "../../../utils/types/navigationType";
 
 export default function TransactionModal({
   modalVisible,
@@ -24,18 +26,27 @@ export default function TransactionModal({
   modalVisible: boolean;
   setModalVisible: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
+  const navigation: any = useNavigation();
   const options = [
     {
       title: "Add Income",
       image: addIncome,
       description:
         "Track your earnings, including salary and gifts, for a clear view of your income sources. Simple and fast!",
+      onPress: () => {
+        setModalVisible(false);
+        navigation.navigate("AddIncome");
+      },
     },
     {
       title: "Add Expense",
       image: addExpense,
       description:
         "Log your spending on everything from snacks to bills to manage your finances better. Begin today!",
+      onPress: () => {
+        setModalVisible(false);
+        navigation.navigate("AddExpense");
+      },
     },
   ];
 
@@ -49,7 +60,11 @@ export default function TransactionModal({
       <View style={styles.modalContainer}>
         <View style={styles.optionsContainer}>
           {options.map((option, index) => (
-            <TouchableOpacity key={index} style={styles.optionButton}>
+            <TouchableOpacity
+              key={index}
+              style={styles.optionButton}
+              onPress={option.onPress}
+            >
               <Image source={option.image} style={styles.optionImage} />
               <View style={styles.optionTextContainer}>
                 <CustomText preset="h4">{option.title}</CustomText>

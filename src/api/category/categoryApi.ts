@@ -16,7 +16,7 @@ export const categoryService = api.injectEndpoints({
           const { data } = await queryFulfilled;
           const incomeCategories: CategoryItem[] = [];
           const expenseCategories: CategoryItem[] = [];
-          data.data.forEach((item: CategoryItem) => {
+          data?.data?.forEach((item: CategoryItem) => {
             if (item.type === "expense") {
               expenseCategories.push(item);
             } else if (item.type === "income") {

@@ -27,7 +27,8 @@ export default function AddExpense({
 }: MainStackScreenProps<"AddExpense">) {
   const insets = useSafeAreaInsets();
   const [selectedCategory, setSelectedCategory] = useState();
-  const { incomeCategories } = useSelector(
+  const [amount, setAmount] = useState("");
+  const { expenseCategories } = useSelector(
     (state: RootState) => state.category
   );
   const { data, isLoading, isError } = useFetchCategoriesQuery();
@@ -36,6 +37,9 @@ export default function AddExpense({
     navigation.goBack();
   };
 
+  useEffect(() => {
+    console.log(amount);
+  }, [amount]);
   return (
     <View
       style={[FinancialTrackingStyles.container, { paddingTop: insets.top }]}
@@ -73,6 +77,9 @@ export default function AddExpense({
                   </CustomText>
                 </View>
               }
+              inputValue={"$"}
+              onTextChange={(value) => setAmount(value)}
+              inputType="number-pad"
             />
           </View>
           <ScrollView
@@ -80,18 +87,20 @@ export default function AddExpense({
             style={FinancialTrackingStyles.scrollView}
           >
             <View style={FinancialTrackingStyles.pickerContainer}>
-              <RNPickerSelect
-                onValueChange={(value) => console.log(value)}
-                items={incomeCategories as CategoryItem[]}
-                placeholder={{
-                  label: "Select a category",
-                  value: null,
-                }}
-                style={pickerSelectStyles}
-                Icon={() => (
-                  <Feather name="arrow-down" size={20} color="#ced4da" />
-                )}
-              />
+              {expenseCategories && (
+                <RNPickerSelect
+                  onValueChange={(value) => console.log(value)}
+                  items={expenseCategories as CategoryItem[]}
+                  placeholder={{
+                    label: "Select a category",
+                    value: null,
+                  }}
+                  style={pickerSelectStyles}
+                  Icon={() => (
+                    <Feather name="arrow-down" size={20} color="#ced4da" />
+                  )}
+                />
+              )}
             </View>
 
             <CustomInput

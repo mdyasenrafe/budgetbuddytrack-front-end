@@ -1,34 +1,143 @@
-import { View, ScrollView, TouchableOpacity } from "react-native";
-import { AntDesign, Feather } from "@expo/vector-icons";
+// React and React Native core imports
 import React, { useState } from "react";
+import { View, ScrollView, TouchableOpacity, Image } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+
+// Expo
+import { AntDesign, Feather, Ionicons } from "@expo/vector-icons";
+import * as ImagePicker from "expo-image-picker";
+
+// Redux
+import { useSelector } from "react-redux";
+import { RootState } from "../../store";
+
+// Custom components and utility types
 import CustomText from "../../components/common/Text/CustomText";
 import CustomInput from "../../components/common/CutomInput";
 import { CustomButton } from "../../components/common/Button";
-import { colors } from "../../theme/colors";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { MainStackScreenProps } from "../../utils/types/navigationType";
+import { CategoryItem } from "../../utils/types/categoryType";
+
+// Styles and themes
+import { colors } from "../../theme/colors";
 import {
   FinancialTrackingStyles,
   pickerSelectStyles,
 } from "../../styles/FinancialTrackingStyles";
+import { AuthStyles } from "../../styles/AuthStyles";
+
+// Third-party components
 import RNPickerSelect from "react-native-picker-select";
-import { useSelector } from "react-redux";
-import { RootState } from "../../store";
-import { CategoryItem } from "../../utils/types/categoryType";
+
+// API and other utilities
+import { useImageUploadMutation } from "../../api/imageUpload";
+import { showMessage } from "../../components/common/ToastMessage";
+
+interface InvoiceType {
+  picture: string;
+  pictureBase64: string;
+}
 
 export default function AddExpense({
   navigation,
 }: MainStackScreenProps<"AddExpense">) {
   const insets = useSafeAreaInsets();
-  const [selectedCategory, setSelectedCategory] = useState();
+  // states
+  const [invoice, setInvoice] = useState<InvoiceType | null>();
   const [amount, setAmount] = useState("");
+  const [description, setDescription] = useState<string>("");
+  const [selectedCategory, setSelectedCategory] = useState<string>("");
+  const [formError, setFormError] = useState({
+    field: "",
+    message: "",
+    hasError: false,
+  });
+
   const { expenseCategories } = useSelector(
     (state: RootState) => state.category
   );
 
+  // apis
+  const [imageUpload, { isLoading: imageLoading }] = useImageUploadMutation();
+
   const handleGoBack = () => {
     navigation.goBack();
   };
+
+  const chooseImage = async () => {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+      base64: true,
+    });
+
+    if (!result.canceled) {
+      const fileSizeInBytes: number = result?.assets[0]?.fileSize || 0;
+      const fileSizeInKB = fileSizeInBytes / 1024;
+      if (fileSizeInKB > 500) {
+        showMessage({
+          type: "error",
+          message: "Image must be less than 500KB",
+        });
+      } else {
+        setInvoice({
+          picture: result.assets[0].uri || "",
+          pictureBase64: result.assets[0].base64 || "",
+        });
+      }
+    }
+  };
+
+  const handleSubmit = async () => {
+    if (!validateFormFields()) {
+      try {
+        const formattedAmount = parseFloat(amount.split("$")[1]).toFixed(2);
+
+        const bodyData = {
+          amount: formattedAmount,
+          description: description,
+          date: new Date(),
+          type: "income",
+          category: selectedCategory,
+          invoice: "",
+        };
+        if (invoice?.pictureBase64) {
+          const res = await imageUpload({
+            url: invoice.pictureBase64,
+          }).unwrap();
+          bodyData["invoice"] = res?.link || "";
+        }
+        console.log(bodyData);
+      } catch (error) {
+        let errorMessage = "An error occurred";
+        if (typeof error === "object" && error !== null) {
+          const apiError = error as ApiError;
+          if (apiError.data?.message) {
+            errorMessage = apiError.data.message;
+          }
+        }
+        showError("", errorMessage);
+      }
+    }
+  };
+  const validateFormFields = () => {
+    if (!amount) return showError("amount", "Amount is required");
+    else if (!selectedCategory)
+      return showError("category", "Category is required");
+    else if (!description)
+      return showError("description", "Description is required");
+    return false;
+  };
+
+  const showError = (field: string, message: string) => {
+    setFormError({ field, message, hasError: true });
+    return true;
+  };
+
+  const clearError = () =>
+    setFormError({ field: "", message: "", hasError: false });
 
   return (
     <View
@@ -61,9 +170,11 @@ export default function AddExpense({
               </CustomText>
             </View>
           }
-          inputValue={"$"}
-          onTextChange={(value) => setAmount(value)}
-          inputType="number-pad"
+          inputValue="$"
+          onTextChange={(value) => {
+            setAmount(value);
+            clearError();
+          }}
         />
       </View>
       <ScrollView
@@ -73,7 +184,10 @@ export default function AddExpense({
         <View style={FinancialTrackingStyles.pickerContainer}>
           {expenseCategories && (
             <RNPickerSelect
-              onValueChange={(value) => console.log(value)}
+              onValueChange={(value) => {
+                setSelectedCategory(value);
+                clearError();
+              }}
               items={expenseCategories as CategoryItem[]}
               placeholder={{
                 label: "Select a category",
@@ -87,20 +201,56 @@ export default function AddExpense({
           )}
         </View>
 
-        <CustomInput placeholderText="Description" />
-        <TouchableOpacity style={FinancialTrackingStyles.addInvoiceButton}>
-          <Feather name="paperclip" size={24} color={colors.grey} />
-          <CustomText
-            preset="h6"
-            style={FinancialTrackingStyles.addInvoiceButtonText}
+        <CustomInput
+          placeholderText="Description"
+          inputValue={description}
+          onTextChange={(value) => {
+            setDescription(value);
+            clearError();
+          }}
+        />
+
+        {invoice?.picture ? (
+          <View style={FinancialTrackingStyles.invoiceImageContainer}>
+            <Image
+              source={{ uri: invoice.picture }}
+              style={FinancialTrackingStyles.invoiceImage}
+            />
+            <TouchableOpacity
+              style={FinancialTrackingStyles.invoiceEditIcon}
+              onPress={() => setInvoice(null)}
+            >
+              <Ionicons name="close" size={24} color={colors.white} />
+            </TouchableOpacity>
+          </View>
+        ) : (
+          <TouchableOpacity
+            style={FinancialTrackingStyles.addInvoiceButton}
+            onPress={chooseImage}
           >
-            Add Invoice
-          </CustomText>
-        </TouchableOpacity>
+            <Feather name="paperclip" size={24} />
+            <CustomText
+              preset="h6"
+              style={FinancialTrackingStyles.addInvoiceButtonText}
+            >
+              Add Invoice
+            </CustomText>
+          </TouchableOpacity>
+        )}
+        <View style={{ marginTop: 16 }}>
+          {formError.hasError && (
+            <CustomText style={AuthStyles.errorText}>
+              {formError.message}
+            </CustomText>
+          )}
+        </View>
       </ScrollView>
       <CustomButton
+        onButtonPress={handleSubmit}
         title="Submit"
         customStyle={FinancialTrackingStyles.submitButton}
+        isDisabled={imageLoading}
+        isLoading={imageLoading}
       />
     </View>
   );

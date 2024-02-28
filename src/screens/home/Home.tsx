@@ -6,7 +6,7 @@ import { RootState } from "../../store";
 
 export default function Home() {
   const { user, token } = useSelector((state: RootState) => state.auth);
-  console.log("user =>", user, "token =>N", token);
+  // console.log("user =>", user, "token =>N", token);
   return (
     <SafeAreaView
       style={{

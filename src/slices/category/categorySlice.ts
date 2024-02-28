@@ -10,10 +10,10 @@ const categorySlice = createSlice({
   name: "category",
   initialState,
   reducers: {
-    setIncome: (state, action: PayloadAction<IncomeType | null>) => {
+    setIncome: (state, action: PayloadAction<IncomeType[] | null>) => {
       state.income = action.payload;
     },
-    setExpense: (state, action: PayloadAction<IncomeType | null>) => {
+    setExpense: (state, action: PayloadAction<IncomeType[] | null>) => {
       state.expense = action.payload;
     },
   },

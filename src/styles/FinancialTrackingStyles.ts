@@ -56,7 +56,7 @@ export const FinancialTrackingStyles = StyleSheet.create({
     marginTop: 24,
   },
   addInvoiceButtonText: {
-    color: colors.grey,
+    marginLeft: 8,
   },
   submitButton: {
     position: "absolute",
@@ -93,5 +93,29 @@ export const FinancialTrackingStyles = StyleSheet.create({
   },
   pickerContainer: {
     marginTop: 40,
+  },
+});
+
+export const pickerSelectStyles = StyleSheet.create({
+  inputIOS: {
+    borderWidth: 1,
+    borderColor: "lightgrey",
+    backgroundColor: "#fafafa",
+    height: 48,
+    paddingHorizontal: 16,
+    alignItems: "center",
+    borderRadius: 8,
+  },
+  inputAndroid: {
+    borderWidth: 1,
+    borderColor: "lightgrey",
+    backgroundColor: "#fafafa",
+    height: 48,
+    paddingHorizontal: 16,
+    alignItems: "center",
+  },
+  iconContainer: {
+    top: 10,
+    right: 12,
   },
 });

@@ -3,10 +3,15 @@ import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store";
+import { useFetchCategoriesQuery } from "../../api/category/categoryApi";
+import LoadingSpinner from "../../components/common/LoadingSpinner";
+import { colors } from "../../theme/colors";
+import CustomText from "../../components/common/Text/CustomText";
 
 export default function Home() {
   const { user, token } = useSelector((state: RootState) => state.auth);
-  // console.log("user =>", user, "token =>N", token);
+  const { data, isLoading, isError } = useFetchCategoriesQuery();
+
   return (
     <SafeAreaView
       style={{
@@ -14,7 +19,8 @@ export default function Home() {
         backgroundColor: "#fff",
       }}
     >
-      <Text>Home</Text>
+      {isLoading && <LoadingSpinner size="large" color={colors.primary} />}
+      <CustomText> Home </CustomText>
     </SafeAreaView>
   );
 }

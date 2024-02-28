@@ -79,11 +79,10 @@ export default function AddIncome({
   const handleSubmit = async () => {
     if (!validateFormFields()) {
       try {
-        const rawAmount =
-          parseFloat(amount.split("$")[1]).toFixed(2) || parseFloat("2.5");
+        const formattedAmount = parseFloat(amount.split("$")[1]).toFixed(2);
 
         const bodyData = {
-          amount: rawAmount,
+          amount: formattedAmount,
           description: description,
           date: new Date(),
           type: "income",
@@ -194,23 +193,13 @@ export default function AddIncome({
           }}
         />
         {invoice?.picture ? (
-          <View
-            style={{
-              marginTop: 24,
-              width: 150,
-            }}
-          >
+          <View style={FinancialTrackingStyles.invoiceImageContainer}>
             <Image
               source={{ uri: invoice.picture }}
-              style={{
-                width: 150,
-                height: 150,
-                borderRadius: 8,
-                position: "relative",
-              }}
+              style={FinancialTrackingStyles.invoiceImage}
             />
             <TouchableOpacity
-              style={FinancialTrackingStyles.imageEditIcon}
+              style={FinancialTrackingStyles.invoiceEditIcon}
               onPress={() => setInvoice(null)}
             >
               <Ionicons name="close" size={24} color={colors.white} />

@@ -91,7 +91,7 @@ export const FinancialTrackingStyles = StyleSheet.create({
   pickerContainer: {
     marginTop: 40,
   },
-  imageEditIcon: {
+  invoiceEditIcon: {
     position: "absolute",
     top: 4,
     right: 4,
@@ -101,6 +101,16 @@ export const FinancialTrackingStyles = StyleSheet.create({
     height: 35,
     justifyContent: "center",
     alignItems: "center",
+  },
+  invoiceImageContainer: {
+    marginTop: 24,
+    width: 150,
+  },
+  invoiceImage: {
+    width: 150,
+    height: 150,
+    borderRadius: 8,
+    position: "relative",
   },
 });
 

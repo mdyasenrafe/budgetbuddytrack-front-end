@@ -87,10 +87,7 @@ export default function AddExpense({
           )}
         </View>
 
-        <CustomInput
-          placeholderText="Description"
-          containerStyle={FinancialTrackingStyles.inputMargin}
-        />
+        <CustomInput placeholderText="Description" />
         <TouchableOpacity style={FinancialTrackingStyles.addInvoiceButton}>
           <Feather name="paperclip" size={24} color={colors.grey} />
           <CustomText

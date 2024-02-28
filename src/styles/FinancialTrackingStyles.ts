@@ -40,9 +40,6 @@ export const FinancialTrackingStyles = StyleSheet.create({
     fontSize: 24,
     fontFamily: Typography.bold,
   },
-  inputMargin: {
-    marginTop: 24,
-  },
   addInvoiceButton: {
     flexDirection: "row",
     width: screenWidth - 32,
@@ -94,9 +91,23 @@ export const FinancialTrackingStyles = StyleSheet.create({
   pickerContainer: {
     marginTop: 40,
   },
+  imageEditIcon: {
+    position: "absolute",
+    top: 4,
+    right: 4,
+    backgroundColor: colors.secondary,
+    borderRadius: 17.5,
+    width: 35,
+    height: 35,
+    justifyContent: "center",
+    alignItems: "center",
+  },
 });
 
 export const pickerSelectStyles = StyleSheet.create({
+  inputIOSContainer: {
+    marginBottom: 30,
+  },
   inputIOS: {
     borderWidth: 1,
     borderColor: "lightgrey",
@@ -113,6 +124,11 @@ export const pickerSelectStyles = StyleSheet.create({
     height: 48,
     paddingHorizontal: 16,
     alignItems: "center",
+    borderRadius: 8,
+    marginBottom: 24,
+  },
+  inputAndroidContainer: {
+    marginBottom: 30,
   },
   iconContainer: {
     top: 10,

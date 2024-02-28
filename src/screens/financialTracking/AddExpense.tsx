@@ -3,6 +3,7 @@ import {
   ScrollView,
   TouchableOpacity,
   ActivityIndicator,
+  StyleSheet,
 } from "react-native";
 import { AntDesign, Feather } from "@expo/vector-icons";
 import React, { useEffect, useRef, useState } from "react";
@@ -15,21 +16,21 @@ import { MainStackScreenProps } from "../../utils/types/navigationType";
 import { FinancialTrackingStyles } from "../../styles/FinancialTrackingStyles";
 import RNPickerSelect from "react-native-picker-select";
 import { screenWidth } from "../../theme/theme";
-import { useGetCategoryQuery } from "../../api/category/categoryApi";
 import LoadingSpinner from "../../components/common/LoadingSpinner";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store";
-import { IncomeType } from "../../utils/types/categoryType";
+import { useFetchCategoriesQuery } from "../../api/category/categoryApi";
+import { CategoryItem } from "../../utils/types/categoryType";
 
 export default function AddExpense({
   navigation,
 }: MainStackScreenProps<"AddExpense">) {
   const insets = useSafeAreaInsets();
   const [selectedCategory, setSelectedCategory] = useState();
-  const { income, expense } = useSelector((state: RootState) => state.category);
-  const { data, isLoading, isError } = useGetCategoryQuery();
-
-  console.log("income => ", income);
+  const { incomeCategories } = useSelector(
+    (state: RootState) => state.category
+  );
+  const { data, isLoading, isError } = useFetchCategoriesQuery();
 
   const handleGoBack = () => {
     navigation.goBack();
@@ -78,45 +79,21 @@ export default function AddExpense({
             showsVerticalScrollIndicator={false}
             style={FinancialTrackingStyles.scrollView}
           >
-            <CustomInput
-              placeholderText="Category"
-              containerStyle={FinancialTrackingStyles.inputMargin}
-            />
-            <RNPickerSelect
-              onValueChange={(value) => console.log(value)}
-              items={income as IncomeType[]}
-              placeholder={{
-                label: "Category",
-                value: "",
-              }}
-              style={{
-                inputIOS: {
-                  borderWidth: 1,
-                  borderColor: "lightgrey",
-                  backgroundColor: "#fafafa",
-                  height: 48,
-                  paddingHorizontal: 16,
-                  alignItems: "center",
-                },
-                inputAndroid: {
-                  borderWidth: 1,
-                  borderColor: "lightgrey",
-                  backgroundColor: "#fafafa",
-                  height: 48,
-                  paddingHorizontal: 16,
-                  alignItems: "center",
-                },
-                iconContainer: {
-                  top: 10,
-                  right: 12,
-                },
-              }}
-              Icon={() => {
-                return (
-                  <Feather name="arrow-down" size={20} color={colors.grey} />
-                );
-              }}
-            />
+            <View style={FinancialTrackingStyles.pickerContainer}>
+              <RNPickerSelect
+                onValueChange={(value) => console.log(value)}
+                items={incomeCategories as CategoryItem[]}
+                placeholder={{
+                  label: "Select a category",
+                  value: null,
+                }}
+                style={pickerSelectStyles}
+                Icon={() => (
+                  <Feather name="arrow-down" size={20} color="#ced4da" />
+                )}
+              />
+            </View>
+
             <CustomInput
               placeholderText="Description"
               containerStyle={FinancialTrackingStyles.inputMargin}
@@ -140,3 +117,27 @@ export default function AddExpense({
     </View>
   );
 }
+
+const pickerSelectStyles = StyleSheet.create({
+  inputIOS: {
+    borderWidth: 1,
+    borderColor: "lightgrey",
+    backgroundColor: "#fafafa",
+    height: 48,
+    paddingHorizontal: 16,
+    alignItems: "center",
+    borderRadius: 8,
+  },
+  inputAndroid: {
+    borderWidth: 1,
+    borderColor: "lightgrey",
+    backgroundColor: "#fafafa",
+    height: 48,
+    paddingHorizontal: 16,
+    alignItems: "center",
+  },
+  iconContainer: {
+    top: 10,
+    right: 12,
+  },
+});

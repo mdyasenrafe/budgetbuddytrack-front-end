@@ -1,33 +1,36 @@
-import { setExpense, setIncome } from "../../slices/category/categorySlice";
 import {
-  CategoryApiResponseType,
-  IncomeType,
-} from "../../utils/types/categoryType";
+  updateExpenseCategories,
+  updateIncomeCategories,
+} from "../../slices/category/categorySlice";
+import { CategoryItem, CategoryResponse } from "../../utils/types/categoryType";
 import { api } from "../api";
 
-export const categoryApi = api.injectEndpoints({
+export const categoryService = api.injectEndpoints({
   endpoints: (builder) => ({
-    getCategory: builder.query<CategoryApiResponseType, void | undefined>({
+    fetchCategories: builder.query<CategoryResponse, void | undefined>({
       query: () => {
         return "category/categories";
       },
       async onQueryStarted(_, { dispatch, queryFulfilled }) {
         try {
           const { data } = await queryFulfilled;
-          const income: IncomeType[] = [];
-          const expense: IncomeType[] = [];
-          data.data.map((item: IncomeType) => {
+          const incomeCategories: CategoryItem[] = [];
+          const expenseCategories: CategoryItem[] = [];
+          data.data.forEach((item: CategoryItem) => {
             if (item.type === "expense") {
-              income.push(item);
+              expenseCategories.push(item);
             } else if (item.type === "income") {
-              expense.push(item);
+              incomeCategories.push(item);
             }
           });
-          dispatch(setIncome(income));
-          dispatch(setExpense(expense));
-        } catch {}
+          dispatch(updateIncomeCategories(incomeCategories));
+          dispatch(updateExpenseCategories(expenseCategories));
+        } catch (error) {
+          console.error("Error fetching categories:", error);
+        }
       },
     }),
   }),
 });
-export const { useGetCategoryQuery } = categoryApi;
+
+export const { useFetchCategoriesQuery } = categoryService;

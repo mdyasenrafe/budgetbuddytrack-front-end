@@ -1,24 +1,31 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { CategoryType, IncomeType } from "../../utils/types/categoryType";
+import { CategoryItem, CategoryState } from "../../utils/types/categoryType";
 
-const initialState: CategoryType = {
-  income: null,
-  expense: null,
+const initialState: CategoryState = {
+  incomeCategories: null,
+  expenseCategories: null,
 };
 
 const categorySlice = createSlice({
   name: "category",
   initialState,
   reducers: {
-    setIncome: (state, action: PayloadAction<IncomeType[] | null>) => {
-      state.income = action.payload;
+    updateIncomeCategories: (
+      state,
+      action: PayloadAction<CategoryItem[] | null>
+    ) => {
+      state.incomeCategories = action.payload;
     },
-    setExpense: (state, action: PayloadAction<IncomeType[] | null>) => {
-      state.expense = action.payload;
+    updateExpenseCategories: (
+      state,
+      action: PayloadAction<CategoryItem[] | null>
+    ) => {
+      state.expenseCategories = action.payload;
     },
   },
 });
 
-export const { setIncome, setExpense } = categorySlice.actions;
+export const { updateIncomeCategories, updateExpenseCategories } =
+  categorySlice.actions;
 
 export default categorySlice.reducer;

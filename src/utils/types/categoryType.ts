@@ -1,15 +1,15 @@
-export interface IncomeType {
+export interface CategoryItem {
   _id?: string;
   label: string;
   value: string;
-  type: string;
+  type: "income" | "expense";
 }
 
-export interface CategoryApiResponseType {
-  data: IncomeType[];
+export interface CategoryResponse {
+  data: CategoryItem[];
 }
 
-export interface CategoryType {
-  income: IncomeType[] | null;
-  expense: IncomeType[] | null;
+export interface CategoryState {
+  incomeCategories: CategoryItem[] | null;
+  expenseCategories: CategoryItem[] | null;
 }

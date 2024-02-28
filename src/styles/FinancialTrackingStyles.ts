@@ -48,7 +48,7 @@ export const FinancialTrackingStyles = StyleSheet.create({
     width: screenWidth - 32,
     borderWidth: 1,
     height: 48,
-    borderRadius: 12,
+    borderRadius: 8,
     alignItems: "center",
     justifyContent: "center",
     borderColor: "lightgrey",
@@ -90,5 +90,8 @@ export const FinancialTrackingStyles = StyleSheet.create({
     borderRadius: 8,
     color: "black",
     paddingRight: 30,
+  },
+  pickerContainer: {
+    marginTop: 40,
   },
 });

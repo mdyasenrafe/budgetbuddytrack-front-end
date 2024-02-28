@@ -6,7 +6,6 @@ import { Provider } from "react-redux";
 import { store } from "./src/store";
 import { NavigationContainer } from "@react-navigation/native";
 import Toast from "react-native-toast-message";
-import "react-native-gesture-handler";
 
 export default function App() {
   const [loaded] = useFonts({

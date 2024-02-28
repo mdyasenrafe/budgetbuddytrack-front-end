@@ -12,8 +12,8 @@ import CustomInput from "../../components/common/CutomInput";
 import { CustomButton } from "../../components/common/Button";
 import { AuthStyles } from "../../styles/AuthStyles";
 import { showMessage } from "../../components/common/ToastMessage";
-import { useRegisterMutation } from "../../services/auth/authApi";
-import { useImageUploadMutation } from "../../services/imageUpload";
+import { useRegisterMutation } from "../../api/auth/authApi";
+import { useImageUploadMutation } from "../../api/imageUpload";
 
 const defaultProfileImage = "https://i.ibb.co/7VT9q3H/image.png";
 

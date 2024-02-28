@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, TouchableOpacity } from "react-native";
+import { View, ScrollView, TouchableOpacity } from "react-native";
 import { AntDesign, Feather } from "@expo/vector-icons";
 import React from "react";
 import CustomText from "../../components/common/Text/CustomText";

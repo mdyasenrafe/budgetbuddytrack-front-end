@@ -9,7 +9,7 @@ import CustomText from "../../components/common/Text/CustomText";
 import { colors } from "../../theme/colors";
 import CustomInput from "../../components/common/CutomInput";
 import { CustomButton } from "../../components/common/Button";
-import { useChangePasswordMutation } from "../../services/auth/authApi";
+import { useChangePasswordMutation } from "../../api/auth/authApi";
 import { showMessage } from "../../components/common/ToastMessage";
 
 type PasswordFormData = {

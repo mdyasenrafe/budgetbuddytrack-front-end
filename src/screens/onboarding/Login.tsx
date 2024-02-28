@@ -10,7 +10,7 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { AuthStyles } from "../../styles/AuthStyles";
 import { CustomButton } from "../../components/common/Button";
 import { isValidateEmail } from "../../utils/validEmail";
-import { useLoginMutation } from "../../services/auth/authApi";
+import { useLoginMutation } from "../../api/auth/authApi";
 import CustomInput from "../../components/common/CutomInput";
 import { MainNavigationParamList } from "../../utils/types/navigationType";
 

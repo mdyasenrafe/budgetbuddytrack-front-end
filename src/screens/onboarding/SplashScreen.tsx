@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { View, Image, StyleSheet } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
-import { useGetInfoFromTokenQuery } from "../../services/auth/authApi";
-import { setToken, setUser } from "../../features/auth/authSlice";
+import { useGetInfoFromTokenQuery } from "../../api/auth/authApi";
+import { setToken, setUser } from "../../slices/auth/authSlice";
 import { getToken } from "../../utils/storage";
 import { MainStackScreenProps } from "../../utils/types/navigationType";
 import LoadingSpinner from "../../components/common/LoadingSpinner";

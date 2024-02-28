@@ -7,7 +7,7 @@ import { colors } from "../../theme/colors";
 import { AntDesign, Feather, MaterialIcons } from "@expo/vector-icons";
 import { useDispatch, useSelector } from "react-redux";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { setToken, setUser } from "../../features/auth/authSlice";
+import { setToken, setUser } from "../../slices/auth/authSlice";
 import ProfileOptionItem from "../../components/profile/ProfileOptionItem";
 import { ProfileOption } from "../../utils/types/ProfileType";
 import { GlobalStyles } from "../../styles/GlobalStyles";

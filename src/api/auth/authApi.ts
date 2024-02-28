@@ -1,4 +1,4 @@
-import { setToken, setUser } from "../../features/auth/authSlice";
+import { setToken, setUser } from "../../slices/auth/authSlice";
 import { saveToken } from "../../utils/storage";
 import { api } from "../api";
 

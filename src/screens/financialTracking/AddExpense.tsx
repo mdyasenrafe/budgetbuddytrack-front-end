@@ -28,11 +28,13 @@ import { AuthStyles } from "../../styles/AuthStyles";
 
 // Third-party components
 import RNPickerSelect from "react-native-picker-select";
+import DateTimePickerModal from "react-native-modal-datetime-picker";
 
 // API and other utilities
 import { useImageUploadMutation } from "../../api/imageUpload";
 import { showMessage } from "../../components/common/ToastMessage";
 import moment from "moment";
+import { GlobalStyles } from "../../styles/GlobalStyles";
 
 interface InvoiceType {
   picture: string;
@@ -48,6 +50,9 @@ export default function AddExpense({
   const [amount, setAmount] = useState("");
   const [description, setDescription] = useState<string>("");
   const [selectedCategory, setSelectedCategory] = useState<string>("");
+  const [isDatePickerVisible, setDatePickerVisibility] =
+    useState<boolean>(false);
+  const [selectedDate, setSelectedDate] = useState<any>();
   const [formError, setFormError] = useState({
     field: "",
     message: "",
@@ -94,12 +99,13 @@ export default function AddExpense({
   const handleSubmit = async () => {
     if (!validateFormFields()) {
       try {
-        const formattedAmount = parseFloat(amount.split("$")[1]).toFixed(2);
-
+        const formattedAmount = parseFloat(amount.split("$")[1]);
+        console.log(amount);
+        console.log(typeof formattedAmount);
         const bodyData = {
           amount: formattedAmount,
           description: description,
-          date: moment().format(),
+          date: selectedDate,
           type: "income",
           category: selectedCategory,
           invoice: "",
@@ -109,6 +115,9 @@ export default function AddExpense({
             url: invoice.pictureBase64,
           }).unwrap();
           bodyData["invoice"] = res?.link || "";
+        } else {
+          // @ts-ignore
+          delete bodyData["invoice"];
         }
         console.log(bodyData);
       } catch (error) {
@@ -159,7 +168,7 @@ export default function AddExpense({
 
       <View style={FinancialTrackingStyles.amountInputContainer}>
         <CustomInput
-          placeholderText="$"
+          placeholderText=""
           containerStyle={FinancialTrackingStyles.amountInput}
           textStyle={FinancialTrackingStyles.amountInputText}
           placeholderTextColor="white"
@@ -171,11 +180,12 @@ export default function AddExpense({
               </CustomText>
             </View>
           }
-          inputValue="$"
           onTextChange={(value) => {
             setAmount(value);
             clearError();
           }}
+          inputType="number-pad"
+          currencySymbol={true}
         />
       </View>
       <ScrollView
@@ -200,8 +210,39 @@ export default function AddExpense({
               )}
             />
           )}
+
+          <DateTimePickerModal
+            isVisible={isDatePickerVisible}
+            mode="datetime"
+            onConfirm={(date) => {
+              setSelectedDate(moment(date).format());
+              setDatePickerVisibility(false);
+            }}
+            onCancel={() => {
+              setDatePickerVisibility(false);
+            }}
+          />
         </View>
 
+        <TouchableOpacity
+          style={[
+            GlobalStyles.inputContainer,
+            {
+              marginBottom: 24,
+              alignItems: "center",
+            },
+          ]}
+          onPress={() => setDatePickerVisibility(true)}
+        >
+          <CustomText
+            preset="p4"
+            style={{ color: selectedDate ? "black" : "#ced4da" }}
+          >
+            {selectedDate
+              ? moment(selectedDate).format("Do MMM YYYY, h:mm a")
+              : "Select Date and Time"}
+          </CustomText>
+        </TouchableOpacity>
         <CustomInput
           placeholderText="Description"
           inputValue={description}

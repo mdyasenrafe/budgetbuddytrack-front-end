@@ -41,4 +41,5 @@ export type CustomInputProps = {
   textInputRef?: React.RefObject<TextInput>;
   shouldAutoFocus?: boolean;
   placeholderTextColor?: string;
+  currencySymbol?: boolean;
 };

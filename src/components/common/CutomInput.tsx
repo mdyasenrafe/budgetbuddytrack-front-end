@@ -1,9 +1,10 @@
 import React from "react";
-import { View, StyleSheet, TextInput } from "react-native";
-import { Typography } from "../../theme/typography";
-import { Colors } from "react-native/Libraries/NewAppScreen";
+import { View, TextInput } from "react-native";
 // @ts-ignore
 import { CustomInputProps } from "../../utils/types/textInputType";
+import { GlobalStyles } from "../../styles/GlobalStyles";
+import CustomText from "./Text/CustomText";
+import { FinancialTrackingStyles } from "../../styles/FinancialTrackingStyles";
 
 export default function CustomInput({
   placeholderText,
@@ -31,12 +32,21 @@ export default function CustomInput({
   textInputRef,
   shouldAutoFocus = false,
   placeholderTextColor,
+  currencySymbol,
 }: CustomInputProps) {
   return (
     <View>
       {labelText && labelComponentDisplay}
-      <View style={[styles.inputContainer, containerStyle]}>
+      <View style={[GlobalStyles.inputContainer, containerStyle]}>
         {leadingIcon && leadingIconComponent}
+        {currencySymbol && (
+          <CustomText
+            style={FinancialTrackingStyles.amountInputText}
+            preset="h4"
+          >
+            $
+          </CustomText>
+        )}
         <TextInput
           keyboardType={inputType}
           autoCapitalize={capitalizationMode}
@@ -46,7 +56,7 @@ export default function CustomInput({
           editable={isEditable}
           maxLength={textMaxLength}
           secureTextEntry={isSecureTextEntry}
-          style={[styles.input, textStyle]}
+          style={[GlobalStyles.input, textStyle]}
           onSubmitEditing={onReturnKeySubmit}
           returnKeyLabel={returnKeyLabelText}
           returnKeyType={keyboardReturnKeyType}
@@ -62,25 +72,3 @@ export default function CustomInput({
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  input: {
-    width: "95%",
-    height: 50,
-    fontSize: 14,
-    fontFamily: Typography.regular,
-  },
-  inputContainer: {
-    width: "100%",
-    height: 50,
-    borderColor: "lightgrey",
-    borderWidth: 1,
-    paddingHorizontal: 16,
-    borderRadius: 8,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    marginBottom: 16,
-    backgroundColor: "#fafafa",
-  },
-});

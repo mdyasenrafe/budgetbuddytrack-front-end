@@ -99,9 +99,7 @@ export default function AddExpense({
   const handleSubmit = async () => {
     if (!validateFormFields()) {
       try {
-        const formattedAmount = parseFloat(amount.split("$")[1]);
-        console.log(amount);
-        console.log(typeof formattedAmount);
+        const formattedAmount = parseInt(amount);
         const bodyData = {
           amount: formattedAmount,
           description: description,

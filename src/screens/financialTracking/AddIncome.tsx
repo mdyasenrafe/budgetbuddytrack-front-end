@@ -19,6 +19,7 @@ import { showMessage } from "../../components/common/ToastMessage";
 import * as ImagePicker from "expo-image-picker";
 import { AuthStyles } from "../../styles/AuthStyles";
 import { useImageUploadMutation } from "../../api/imageUpload";
+import moment from "moment";
 
 interface InvoiceType {
   picture: string;
@@ -84,7 +85,7 @@ export default function AddIncome({
         const bodyData = {
           amount: formattedAmount,
           description: description,
-          date: new Date(),
+          date: moment().format(),
           type: "income",
           category: selectedCategory,
           invoice: "",

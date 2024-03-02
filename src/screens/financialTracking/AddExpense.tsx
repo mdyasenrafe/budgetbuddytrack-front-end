@@ -32,6 +32,7 @@ import RNPickerSelect from "react-native-picker-select";
 // API and other utilities
 import { useImageUploadMutation } from "../../api/imageUpload";
 import { showMessage } from "../../components/common/ToastMessage";
+import moment from "moment";
 
 interface InvoiceType {
   picture: string;
@@ -98,7 +99,7 @@ export default function AddExpense({
         const bodyData = {
           amount: formattedAmount,
           description: description,
-          date: new Date(),
+          date: moment().format(),
           type: "income",
           category: selectedCategory,
           invoice: "",

@@ -35,6 +35,7 @@ import { useImageUploadMutation } from "../../api/imageUpload";
 import { showMessage } from "../../components/common/ToastMessage";
 import moment from "moment";
 import { GlobalStyles } from "../../styles/GlobalStyles";
+import { useAddExpenseMutation } from "../../api/transaction/transactionApi";
 
 interface InvoiceType {
   picture: string;
@@ -62,9 +63,11 @@ export default function AddExpense({
   const { expenseCategories } = useSelector(
     (state: RootState) => state.category
   );
+  const userId = useSelector((state: RootState) => state.auth.user?._id);
 
   // apis
   const [imageUpload, { isLoading: imageLoading }] = useImageUploadMutation();
+  const [addExpense, { isLoading }] = useAddExpenseMutation();
 
   const handleGoBack = () => {
     navigation.goBack();
@@ -100,12 +103,16 @@ export default function AddExpense({
     if (!validateFormFields()) {
       try {
         const formattedAmount = parseInt(amount);
+        const category = expenseCategories?.find(
+          (item) => item.value === selectedCategory
+        );
         const bodyData = {
+          userId: userId,
           amount: formattedAmount,
           description: description,
           date: selectedDate,
           type: "income",
-          category: selectedCategory,
+          category: category?._id,
           invoice: "",
         };
         if (invoice?.pictureBase64) {
@@ -117,7 +124,9 @@ export default function AddExpense({
           // @ts-ignore
           delete bodyData["invoice"];
         }
-        console.log(bodyData);
+        const res = await addExpense(bodyData).unwrap();
+        console.log("res =>", res);
+        navigation.goBack();
       } catch (error) {
         let errorMessage = "An error occurred";
         if (typeof error === "object" && error !== null) {
@@ -289,8 +298,8 @@ export default function AddExpense({
         onButtonPress={handleSubmit}
         title="Submit"
         customStyle={FinancialTrackingStyles.submitButton}
-        isDisabled={imageLoading}
-        isLoading={imageLoading}
+        isDisabled={imageLoading || isLoading}
+        isLoading={imageLoading || isLoading}
       />
     </View>
   );

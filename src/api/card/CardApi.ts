@@ -1,34 +1,37 @@
-import { setCardData } from "../../slices/card/cardSlice";
-import { CardResponse } from "../../utils/types/CardOverviewType";
+import { setCardDetails } from "../../slices/card/cardSlice";
+import { CardApiResponse } from "../../utils/types/CardOverviewType";
 import { api } from "../api";
 
-const cardApi = api.injectEndpoints({
+export const cardService = api.injectEndpoints({
   endpoints: (builder) => ({
-    getCard: builder.query<CardResponse, void | undefined>({
-      query: () => {
-        return "card/get-card";
-      },
+    fetchCardDetails: builder.query<CardApiResponse, void | undefined>({
+      query: () => "card/get-card",
       async onQueryStarted(_, { dispatch, queryFulfilled }) {
         try {
           const { data } = await queryFulfilled;
-          dispatch(setCardData(data.data));
-        } catch (error) {}
+          dispatch(setCardDetails(data.data));
+        } catch (error) {
+          console.error("Fetching card details failed", error);
+        }
       },
     }),
-    setTotalAmount: builder.mutation({
-      query: (credentials) => ({
+    updateTotalAmount: builder.mutation({
+      query: (cardDetails) => ({
         url: "card/create-card",
         method: "POST",
-        body: credentials,
+        body: cardDetails,
       }),
       async onQueryStarted(_, { dispatch, queryFulfilled }) {
         try {
           const { data } = await queryFulfilled;
-          dispatch(setCardData(data.data));
-        } catch (error) {}
+          dispatch(setCardDetails(data.data));
+        } catch (error) {
+          console.error("Updating total amount failed", error);
+        }
       },
     }),
   }),
 });
 
-export const { useGetCardQuery, useSetTotalAmountMutation } = cardApi;
+export const { useFetchCardDetailsQuery, useUpdateTotalAmountMutation } =
+  cardService;

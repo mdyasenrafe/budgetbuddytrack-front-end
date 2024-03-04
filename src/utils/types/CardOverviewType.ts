@@ -1,14 +1,14 @@
-export interface CardResponse {
-  data: CardType;
+export interface CardApiResponse {
+  data: CardDetails;
   error: boolean;
 }
 
 export interface CardState {
-  data: CardType | null;
+  details: CardDetails | null;
   isLoading: boolean;
 }
 
-export interface CardType {
+export interface CardDetails {
   _id?: string;
   userId: string;
   totalBalance: string;

@@ -1,21 +1,22 @@
-import { PayloadAction, createReducer, createSlice } from "@reduxjs/toolkit";
-import { CardState, CardType } from "../../utils/types/CardOverviewType";
+import { PayloadAction, createSlice } from "@reduxjs/toolkit";
+import { CardState, CardDetails } from "../../utils/types/CardOverviewType";
 
 const initialState: CardState = {
-  data: null,
+  details: null,
   isLoading: true,
 };
 
-const cardSlice = createSlice({
+export const cardSlice = createSlice({
   name: "card",
   initialState,
   reducers: {
-    setCardData: (state, action: PayloadAction<CardType>) => {
-      state.data = action.payload;
+    setCardDetails: (state, action: PayloadAction<CardDetails>) => {
+      state.details = action.payload;
       state.isLoading = false;
     },
   },
 });
-export const { setCardData } = cardSlice.actions;
+
+export const { setCardDetails } = cardSlice.actions;
 
 export default cardSlice.reducer;

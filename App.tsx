@@ -6,6 +6,8 @@ import { Provider } from "react-redux";
 import { store } from "./src/store";
 import { NavigationContainer } from "@react-navigation/native";
 import Toast from "react-native-toast-message";
+import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 export default function App() {
   const [loaded] = useFonts({
@@ -21,10 +23,18 @@ export default function App() {
   return (
     <Provider store={store}>
       <StatusBar style="auto" />
-      <NavigationContainer>
-        <MainNavigation />
-        <Toast />
-      </NavigationContainer>
+      <GestureHandlerRootView
+        style={{
+          flex: 1,
+        }}
+      >
+        <BottomSheetModalProvider>
+          <NavigationContainer>
+            <MainNavigation />
+            <Toast />
+          </NavigationContainer>
+        </BottomSheetModalProvider>
+      </GestureHandlerRootView>
     </Provider>
   );
 }

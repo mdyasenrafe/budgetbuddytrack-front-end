@@ -15,7 +15,20 @@ const cardApi = api.injectEndpoints({
         } catch (error) {}
       },
     }),
+    setTotalAmount: builder.mutation({
+      query: (credentials) => ({
+        url: "card/create-card",
+        method: "POST",
+        body: credentials,
+      }),
+      async onQueryStarted(_, { dispatch, queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled;
+          dispatch(setCardData(data.data));
+        } catch (error) {}
+      },
+    }),
   }),
 });
 
-export const { useGetCardQuery } = cardApi;
+export const { useGetCardQuery, useSetTotalAmountMutation } = cardApi;

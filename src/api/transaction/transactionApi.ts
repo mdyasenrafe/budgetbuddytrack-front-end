@@ -8,6 +8,7 @@ const transactionApi = api.injectEndpoints({
         method: "POST",
         body: credentials,
       }),
+      invalidatesTags: ["Transaction"],
     }),
   }),
 });

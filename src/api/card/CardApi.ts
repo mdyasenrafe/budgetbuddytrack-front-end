@@ -6,6 +6,7 @@ export const cardService = api.injectEndpoints({
   endpoints: (builder) => ({
     fetchCardDetails: builder.query<CardApiResponse, void | undefined>({
       query: () => "card/get-card",
+      providesTags: ["Transaction"],
       async onQueryStarted(_, { dispatch, queryFulfilled }) {
         try {
           const { data } = await queryFulfilled;

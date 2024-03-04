@@ -6,4 +6,6 @@ export const colors = {
   white: "#FFFFFF",
   tabsBackground: "#fff",
   primaryGlass: "#e1def8",
+  antiFlashWhite: "#fafafa",
+  orangePeel: "#EC9126",
 };

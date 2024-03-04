@@ -111,7 +111,7 @@ export default function AddExpense({
           amount: formattedAmount,
           description: description,
           date: selectedDate,
-          type: "income",
+          type: "expense",
           category: category?._id,
           invoice: "",
         };

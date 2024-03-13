@@ -4,13 +4,14 @@ import {
   StyleSheet,
   TextStyle,
   TouchableOpacity,
+  ViewStyle,
 } from "react-native";
 import { colors } from "../../theme/colors";
 import CustomText from "./Text/CustomText";
 
 interface ButtonProps {
   title: string;
-  customStyle?: TextStyle;
+  customStyle?: ViewStyle;
   onButtonPress?: () => void;
   buttonColor?: string;
   isDisabled?: boolean;

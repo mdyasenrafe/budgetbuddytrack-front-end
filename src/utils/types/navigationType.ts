@@ -23,6 +23,7 @@ export type MainNavigationParamList = {
   EditProfile: undefined;
   AddIncome: undefined;
   AddExpense: undefined;
+  AddBudget: undefined;
 };
 
 export type MainStackScreenProps<T extends keyof MainNavigationParamList> =

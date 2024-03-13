@@ -2,7 +2,6 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import GetStarted from "../screens/onboarding/GetStarted";
 import Login from "../screens/onboarding/Login";
 import Signup from "../screens/onboarding/Signup";
-import Home from "../screens/home/Home";
 import { MainNavigationParamList } from "../utils/types/navigationType";
 import BottomTab from "./BottomTab";
 import SplashScreen from "../screens/onboarding/SplashScreen";

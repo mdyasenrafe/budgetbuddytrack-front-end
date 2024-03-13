@@ -1,4 +1,4 @@
-import { TextInput, TextStyle } from "react-native";
+import { TextInput, TextStyle, ViewStyle } from "react-native";
 
 // Define a TypeScript interface for props
 export type CustomInputProps = {
@@ -20,7 +20,7 @@ export type CustomInputProps = {
     | "twitter"
     | "web-search"
     | "visible-password";
-  containerStyle?: TextStyle;
+  containerStyle?: ViewStyle;
   inputValue?: string;
   isEditable?: boolean;
   textMaxLength?: number;

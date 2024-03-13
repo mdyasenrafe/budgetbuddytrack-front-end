@@ -9,6 +9,7 @@ import ChangePassword from "../screens/Profile/ChangePassword";
 import EditProfile from "../screens/Profile/EditProfile";
 import AddIncome from "../screens/financialTracking/AddIncome";
 import AddExpense from "../screens/financialTracking/AddExpense";
+import AddBudget from "../screens/Budget/AddBudget";
 
 const Stack = createNativeStackNavigator<MainNavigationParamList>();
 
@@ -29,6 +30,7 @@ export default function MainNavigation() {
       <Stack.Screen name="EditProfile" component={EditProfile} />
       <Stack.Screen name="AddIncome" component={AddIncome} />
       <Stack.Screen name="AddExpense" component={AddExpense} />
+      <Stack.Screen name="AddBudget" component={AddBudget} />
     </Stack.Navigator>
   );
 }

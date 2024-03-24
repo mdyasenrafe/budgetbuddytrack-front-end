@@ -19,8 +19,8 @@ import { CategoryItem } from "../../utils/types/categoryType";
 import { CustomButton } from "../../components/common/Button";
 import { useCreateBudgetMutation } from "../../api/budget/BudgetApi";
 import { AuthStyles } from "../../styles/AuthStyles";
-import { CreateBudgetBodyType } from "../../utils/types/BudgetType";
 import { showMessage } from "../../components/common/ToastMessage";
+import { BudgetCreationRequest } from "../../utils/types/BudgetType";
 
 export default function AddBudget({
   navigation,
@@ -52,7 +52,7 @@ export default function AddBudget({
         const category = expenseCategories?.find(
           (item) => item.value === selectedCategory
         );
-        const bodyData: CreateBudgetBodyType = {
+        const bodyData: BudgetCreationRequest = {
           userId: userId || "",
           limit: formattedAmount,
           category: category?._id || "",

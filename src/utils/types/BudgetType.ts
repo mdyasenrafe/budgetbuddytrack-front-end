@@ -1,25 +1,25 @@
-export interface CreateBudgetBodyType {
+export interface BudgetCreationRequest {
   userId: string;
   category: string;
   limit: number;
 }
-export interface CreateBudgetResponseType {
+export interface BudgetCreationResponse {
   _id: string;
   id: string;
   category: string;
   limit: number;
-  createAt: Date;
+  createdAt: Date;
   __v: number;
   isOverLimit: boolean;
   userId: string;
 }
 
-export interface GetBudgetByIdResponseType {
-  data: CreateBudgetResponseType[];
+export interface BudgetDetailsResponse {
+  budgets: BudgetCreationResponse[];
   error: boolean;
   message: string;
 }
 
 export interface BudgetState {
-  budgets: CreateBudgetResponseType[];
+  budgetList: BudgetCreationResponse[];
 }

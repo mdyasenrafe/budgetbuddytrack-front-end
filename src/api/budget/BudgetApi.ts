@@ -1,41 +1,42 @@
-import { addNewBudget, refreshBudgets } from "../../slices/budget/budgetSlice";
 import {
-  CreateBudgetBodyType,
-  CreateBudgetResponseType,
-  GetBudgetByIdResponseType,
+  appendBudget,
+  updateBudgetList,
+} from "../../slices/budget/budgetSlice";
+import {
+  BudgetCreationRequest,
+  BudgetCreationResponse,
+  BudgetDetailsResponse,
 } from "../../utils/types/BudgetType";
 import { api } from "../api";
 
-const budgetService = api.injectEndpoints({
+const budgetApi = api.injectEndpoints({
   endpoints: (builder) => ({
     createBudget: builder.mutation<
-      CreateBudgetResponseType,
-      CreateBudgetBodyType
+      BudgetCreationResponse,
+      BudgetCreationRequest
     >({
-      query: (credentials) => ({
-        url: "budget/create-budget",
+      query: (budgetData) => ({
+        url: "budget/create",
         method: "POST",
-        body: credentials,
+        body: budgetData,
       }),
       async onQueryStarted(arg, { dispatch, queryFulfilled }) {
         try {
           const { data } = await queryFulfilled;
-          dispatch(addNewBudget(data));
+          dispatch(appendBudget(data));
         } catch (error) {}
       },
     }),
-    getBudgetById: builder.query<GetBudgetByIdResponseType, { userId: string }>(
-      {
-        query: ({ userId }) => `budget/get-budget/${userId}`,
-        async onQueryStarted(arg, { dispatch, queryFulfilled }) {
-          try {
-            const { data } = await queryFulfilled;
-            dispatch(refreshBudgets(data.data));
-          } catch (error) {}
-        },
-      }
-    ),
+    fetchBudgetById: builder.query<BudgetDetailsResponse, { userId: string }>({
+      query: ({ userId }) => `budget/details/${userId}`,
+      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled;
+          dispatch(updateBudgetList(data.budgets));
+        } catch (error) {}
+      },
+    }),
   }),
 });
 
-export const { useCreateBudgetMutation, useGetBudgetByIdQuery } = budgetService;
+export const { useCreateBudgetMutation, useFetchBudgetByIdQuery } = budgetApi;

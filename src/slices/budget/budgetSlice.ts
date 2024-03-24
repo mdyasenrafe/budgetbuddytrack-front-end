@@ -1,29 +1,29 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import {
+  BudgetCreationResponse,
   BudgetState,
-  CreateBudgetResponseType,
 } from "../../utils/types/BudgetType";
 
 const initialState: BudgetState = {
-  budgets: [],
+  budgetList: [],
 };
 
 const budgetSlice = createSlice({
   name: "budget",
   initialState,
   reducers: {
-    refreshBudgets: (
+    updateBudgetList: (
       state,
-      action: PayloadAction<CreateBudgetResponseType[]>
+      action: PayloadAction<BudgetCreationResponse[]>
     ) => {
-      state.budgets = action.payload;
+      state.budgetList = action.payload;
     },
-    addNewBudget: (state, action: PayloadAction<CreateBudgetResponseType>) => {
-      state.budgets.push(action.payload);
+    appendBudget: (state, action: PayloadAction<BudgetCreationResponse>) => {
+      state.budgetList.push(action.payload);
     },
   },
 });
 
-export const { refreshBudgets, addNewBudget } = budgetSlice.actions;
+export const { updateBudgetList, appendBudget } = budgetSlice.actions;
 
 export default budgetSlice.reducer;

@@ -17,22 +17,79 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../store";
 import { CategoryItem } from "../../utils/types/categoryType";
 import { CustomButton } from "../../components/common/Button";
+import { useCreateBudgetMutation } from "../../api/budget/BudgetApi";
+import { AuthStyles } from "../../styles/AuthStyles";
+import { CreateBudgetBodyType } from "../../utils/types/BudgetType";
+import { showMessage } from "../../components/common/ToastMessage";
 
 export default function AddBudget({
   navigation,
 }: MainStackScreenProps<"AddBudget">) {
+  const [createBudget, { isLoading }] = useCreateBudgetMutation();
+
   const [selectedCategory, setSelectedCategory] = useState<string>("");
+  const [amount, setAmount] = useState("0");
+  const [formError, setFormError] = useState({
+    field: "",
+    message: "",
+    hasError: false,
+  });
 
   const { expenseCategories } = useSelector(
     (state: RootState) => state.category
   );
+  const userId = useSelector((state: RootState) => state.auth.user?._id);
   const insets = useSafeAreaInsets();
 
   const handleGoBack = () => {
     navigation.goBack();
   };
 
-  const handleContinue = () => {};
+  const handleContinue = async () => {
+    if (!validateFormFields()) {
+      try {
+        const formattedAmount = parseInt(amount);
+        const category = expenseCategories?.find(
+          (item) => item.value === selectedCategory
+        );
+        const bodyData: CreateBudgetBodyType = {
+          userId: userId || "",
+          limit: formattedAmount,
+          category: category?._id || "",
+        };
+        const res = await createBudget(bodyData).unwrap();
+        showMessage({
+          type: "success",
+          message: "New budget added",
+        });
+        navigation.goBack();
+      } catch (error) {
+        let errorMessage = "An error occurred";
+        if (typeof error === "object" && error !== null) {
+          const apiError = error as ApiError;
+          if (apiError.data?.message) {
+            errorMessage = apiError.data.message;
+          }
+        }
+        showError("", errorMessage);
+      }
+    }
+  };
+
+  const validateFormFields = () => {
+    if (!amount) return showError("amount", "Amount is required");
+    else if (!selectedCategory)
+      return showError("category", "Category is required");
+    return false;
+  };
+
+  const showError = (field: string, message: string) => {
+    setFormError({ field, message, hasError: true });
+    return true;
+  };
+
+  const clearError = () =>
+    setFormError({ field: "", message: "", hasError: false });
 
   return (
     <View
@@ -71,10 +128,9 @@ export default function AddBudget({
               </CustomText>
             </View>
           }
-          //   onTextChange={(value) => {
-          //     setAmount(value);
-          //     clearError();
-          //   }}
+          onTextChange={(value) => {
+            setAmount(value);
+          }}
           inputType="number-pad"
           currencySymbol={true}
         />
@@ -99,10 +155,19 @@ export default function AddBudget({
           )}
         </View>
       </View>
+      <View style={{ marginTop: 16 }}>
+        {formError.hasError && (
+          <CustomText style={AuthStyles.errorText}>
+            {formError.message}
+          </CustomText>
+        )}
+      </View>
       <CustomButton
         onButtonPress={handleContinue}
         title="Continue"
         customStyle={FinancialTrackingStyles.submitButton}
+        isLoading={isLoading}
+        isDisabled={isLoading}
       />
     </View>
   );

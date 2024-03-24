@@ -6,7 +6,7 @@ const initialState: CardState = {
   isLoading: true,
 };
 
-export const cardSlice = createSlice({
+const cardSlice = createSlice({
   name: "card",
   initialState,
   reducers: {

@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, ScrollView } from "react-native";
+import { View, StyleSheet, ScrollView } from "react-native";
 import React from "react";
 import { colors } from "../../theme/colors";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -6,16 +6,20 @@ import { getMonthName } from "../../utils/timeFunction";
 import CustomText from "../../components/common/Text/CustomText";
 import { CustomButton } from "../../components/common/Button";
 import { screenWidth } from "../../theme/theme";
-import {
-  BottomTabScreenTypeProps,
-  MainStackScreenProps,
-} from "../../utils/types/navigationType";
+import { BottomTabScreenTypeProps } from "../../utils/types/navigationType";
+import { useGetBudgetByIdQuery } from "../../api/budget/BudgetApi";
+import { useSelector } from "react-redux";
+import { RootState } from "../../store";
 
 export default function Budget({
   navigation,
 }: BottomTabScreenTypeProps<"Budget">) {
   const insets = useSafeAreaInsets();
   const monthName = getMonthName();
+  const userId = useSelector((state: RootState) => state.auth.user?._id);
+  const { data, isLoading } = useGetBudgetByIdQuery({ userId: userId || "" });
+  console.log(data);
+
   return (
     <View style={styles.container}>
       <View style={{ paddingTop: insets.top, marginBottom: 24 }}>

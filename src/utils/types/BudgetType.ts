@@ -12,14 +12,13 @@ export interface BudgetCreationResponse {
   __v: number;
   isOverLimit: boolean;
   userId: string;
+  spent: number;
 }
-
 export interface BudgetDetailsResponse {
-  budgets: BudgetCreationResponse[];
+  data: BudgetCreationResponse[];
   error: boolean;
   message: string;
 }
-
 export interface BudgetState {
   budgetList: BudgetCreationResponse[];
 }

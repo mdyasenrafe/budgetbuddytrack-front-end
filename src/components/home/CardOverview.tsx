@@ -30,8 +30,6 @@ export default function CardOverview() {
   );
   const { user } = useSelector((state: RootState) => state.auth);
 
-  const navigation = useNavigation();
-
   // API hooks
   const { isLoading: cardLoading } = useFetchCardDetailsQuery();
   const [updateTotalAmount, { isLoading: updatingTotalAmount }] =

@@ -154,14 +154,15 @@ export default function AddBudget({
             />
           )}
         </View>
+        <View style={{ marginTop: 16 }}>
+          {formError.hasError && (
+            <CustomText style={AuthStyles.errorText}>
+              {formError.message}
+            </CustomText>
+          )}
+        </View>
       </View>
-      <View style={{ marginTop: 16 }}>
-        {formError.hasError && (
-          <CustomText style={AuthStyles.errorText}>
-            {formError.message}
-          </CustomText>
-        )}
-      </View>
+
       <CustomButton
         onButtonPress={handleContinue}
         title="Continue"

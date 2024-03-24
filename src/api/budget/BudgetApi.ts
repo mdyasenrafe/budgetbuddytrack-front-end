@@ -16,7 +16,7 @@ const budgetApi = api.injectEndpoints({
       BudgetCreationRequest
     >({
       query: (budgetData) => ({
-        url: "budget/create",
+        url: "budget/create-budget",
         method: "POST",
         body: budgetData,
       }),
@@ -28,11 +28,11 @@ const budgetApi = api.injectEndpoints({
       },
     }),
     fetchBudgetById: builder.query<BudgetDetailsResponse, { userId: string }>({
-      query: ({ userId }) => `budget/details/${userId}`,
+      query: ({ userId }) => `budget/get-budget/${userId}`,
       async onQueryStarted(arg, { dispatch, queryFulfilled }) {
         try {
           const { data } = await queryFulfilled;
-          dispatch(updateBudgetList(data.budgets));
+          dispatch(updateBudgetList(data.data));
         } catch (error) {}
       },
     }),
